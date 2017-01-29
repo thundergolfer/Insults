@@ -1,0 +1,6 @@
+pyparsing==1.5.6
+python-dateutil==2.4.1
+pytz==2016.7
+scikit-learn==0.13.1
+scipy==0.13.2
+six==1.10.0
