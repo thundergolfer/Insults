@@ -20,5 +20,5 @@ setup(
 # Github will host this for you, but only if you create a git tag.
 # In your repository, type:
 # git tag 0.1 -m "Adds a tag so that we can put this on PyPI.".
-# Then, type git tag to show a list of tags — you should see 0.1 in the list.
+# Then, type git tag to show a list of tags. you should see 0.1 in the list.
 # Type git push --tags origin master to update your code on Github with the latest tag information. Github creates tarballs for download at https://github.com/{username}/{module_name}/tarball/{tag}.

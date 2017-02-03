@@ -23,9 +23,6 @@ $conda_command info -a
 rm -rf $VIRTUAL_ENV_PATH
 $conda_command create -y python -p $VIRTUAL_ENV_PATH --file "${conda_env_specification}"
 
-# Required to fix an installation error
-$conda_command update pyside
-
 # Install the app and its dependencies
 source run_in_environment.sh
 
@@ -37,3 +34,6 @@ pip install --upgrade $packages_for_pip_to_ignore
 # Install remaining dependencies and tensorflow
 echo "Installing pip requirement file: ${requirements_pip_file}"
 pip install -r "${requirements_pip_file}"
+
+# Required to fix an installation error
+#$conda_command update pyside

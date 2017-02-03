@@ -1,4 +1,4 @@
-scikit-learn==0.13
-pandas==0.8.1
+scikit-learn==0.18.1
+pandas==0.19.2
 futures==2.2.0
-matplotlib==1.2.1
+matplotlib==2.0.0
