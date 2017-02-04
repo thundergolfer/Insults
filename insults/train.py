@@ -17,7 +17,8 @@ from insults.util import (data_file,
                           argsets,
                           auc,
                           score,
-                          save_model)
+                          save_model,
+                          get_parser)
 from insults.classifier import InsultsSGDRegressor
 
 # Dataflow
@@ -65,7 +66,7 @@ def make_full_training():
     df.to_csv(data_file('Inputs','fulltrain.csv'),index=False)
 
 
-def make_clf(args):
+def make_clf(options):
     return InsultsPipeline([
                     ('vect', feature_extraction.text.CountVectorizer(
                                                                      lowercase=False,
@@ -74,12 +75,12 @@ def make_clf(args):
                                                                     )
                     ),
                     ('tfidf', feature_extraction.text.TfidfTransformer(sublinear_tf=True, norm='l2')),
-                    ("clf",InsultsSGDRegressor(alpha=args.sgd_alpha,
-                                               penalty=args.sgd_penalty,
+                    ("clf",InsultsSGDRegressor(alpha=options.sgd_alpha,
+                                               penalty=options.sgd_penalty,
                                                learning_rate='constant',
-                                               eta0=args.sgd_eta0,
-                                               max_iter=args.sgd_max_iter,
-                                               n_iter_per_step=args.sgd_n_iter_per_step)
+                                               eta0=options.sgd_eta0,
+                                               max_iter=options.sgd_max_iter,
+                                               n_iter_per_step=options.sgd_n_iter_per_step)
                     )
                 ])
 
@@ -94,12 +95,12 @@ def choose_n_iterations(df, show=False):
     return chosen, fi.max()
 
 
-def tune_one_fold(i, train_i, test_i):
+def tune_one_fold(options, i, train_i, test_i):
     """
     Tune one fold of the data.
     """
     global train
-    clf = make_clf(args)
+    clf = make_clf(options)
     ftrain = train[train_i]
     logging.info('fold %d' % i)
     clf.fit(ftrain.Comment, ftrain.Insult)
@@ -116,12 +117,12 @@ def tune_one_fold(i, train_i, test_i):
 
 NFOLDS=15
 
-def initialize(args):
+def initialize(arguments):
     """
     Set up the training and test data.
     """
-    train = pandas.read_table(args.trainfile,sep=',')
-    leaderboard = pandas.read_table(args.testfile,sep=',')
+    train = pandas.read_table(arguments.trainfile,sep=',')
+    leaderboard = pandas.read_table(arguments.testfile,sep=',')
     return train,leaderboard
 
 def join_frames(dfs):
@@ -130,7 +131,7 @@ def join_frames(dfs):
         df = df.join(df2)
     return df
 
-def tuning(args):
+def tuning(arguments):
     """
     Train the model, while holding out folds for use in
     estimating performance.
@@ -152,6 +153,7 @@ def tuning(args):
         future_to_fold = dict([
                                 (executor.submit(
                                                 tune_one_fold,
+                                                arguments,
                                                 i,
                                                 train_i,
                                                 test_i
@@ -171,13 +173,13 @@ def tuning(args):
     return df
 
 
-def predict(folds, args):
+def predict(folds, arguments):
     """
     Train on training file, predict on test file.
     """
     logging.info("Starting predictions")
 
-    clf = make_clf(args)
+    clf = make_clf(arguments)
     # work out how long to train for final step.
     clf.steps[-1][-1].max_iter,estimated_score = choose_n_iterations(folds)
     clf.steps[-1][-1].reset_args()
@@ -188,7 +190,7 @@ def predict(folds, args):
 
     submission = pandas.DataFrame(dict(Insult=ypred, Comment=leaderboard.Comment, Date=leaderboard.Date), columns=('Insult', 'Date', 'Comment'))
 
-    if args.predictions == None:
+    if arguments.predictions == None:
         estimates = get_estimates()
         for x in itertools.count(1):
             filename = data_file("Submissions", "submission%d.csv" % x)
@@ -201,8 +203,8 @@ def predict(folds, args):
                 logging.info('Saved %s' % filename)
                 break
     else:
-            submission.to_csv(args.predictions, index=False)
-            logging.info('Saved %s' % args.predictions)
+            submission.to_csv(arguments.predictions, index=False)
+            logging.info('Saved %s' % arguments.predictions)
 
     save_model(clf) # Save the classifier
     logging.info("Finished predictions")
@@ -218,19 +220,19 @@ def run_prediction(parser=None,args_in=None,competition=False):
 
     if competition:
         logging.info('Running prepackaged arguments (%r)' % args_in)
-        args = parser.parse_args(args_in)
+        arguments = parser.parse_args(args_in)
     else:
         logging.info('Using arguments from command line %r' % args_in)
-        args = args_in
+        arguments = args_in
 
-    train,leaderboard = initialize(args)
-    if args.tune:
-        folds = tuning(args)
+    train,leaderboard = initialize(arguments)
+    if arguments.tune:
+        folds = tuning(arguments)
         save_folds(folds)
     else:
         folds = saved_folds()
-    predict(folds,args)
-    if args.score:
+    predict(folds,arguments)
+    if arguments.score:
         score()
 
 
@@ -238,42 +240,10 @@ if __name__ == "__main__":
     competition_argsets = argsets['competition']
     tuning_argsets = argsets['tuning']
 
+    parser = get_parser()
+    arguments = parser.parse_args()
 
-    parser = argparse.ArgumentParser(description="Generate a prediction about insults")
-    parser.add_argument('--trainfile','-T',default=data_file('Inputs','train.csv'),help='file to train classifier on')
-    parser.add_argument(
-                            '--testfile','-t',
-                            default=data_file('Inputs','test.csv'),
-                            help='file to generate predictions for'
-                        )
-    parser.add_argument('--predictions','-p',default=None,help='destination for predictions (or None for default location)')
-    parser.add_argument('--logfile','-l',
-                        default=log_file('insults.log'),
-                        help='name of logfile'
-                        )
-    parser.add_argument('--tune','-tu',
-                        action='store_true',
-                        help='if set, causes tuning step to occur'
-                        )
-
-    # linear classifier parameters
-    parser.add_argument('--sgd_alpha','-sa',type=float,default=1e-5)
-    parser.add_argument('--sgd_eta0','-se',type=float,default=0.005)
-    parser.add_argument('--sgd_rho','-sr',type=float,default=0.999)
-    parser.add_argument('--sgd_max_iter','-smi',type=int,default=1000)
-    parser.add_argument('--sgd_n_iter_per_step','-sns',type=int,default=20)
-    parser.add_argument('--sgd_penalty','-sp',default="elasticnet",help='l1 or l2 or elasticnet (default: %{default}s)')
-
-    # other parameters.
-
-    parser.add_argument('--competition','-c',action='store_true',help='make predictions for the final stage of the competition')
-    parser.add_argument('--comptune','-ct', action='store_true',help='tuning for final stage')
-    parser.add_argument('--score','-sc',action='store_true',dest='score',help='turn on print out of score at end', default=True)
-    parser.add_argument('--no_score','-nsc',action='store_false',dest='score',help='turn off print out of score at end' )
-
-
-    args = parser.parse_args()
-    if args.competition:
+    if arguments.competition:
         # Need to create directory
         log_dir = "Logs"
         if not os.path.exists(log_dir):
@@ -282,10 +252,10 @@ if __name__ == "__main__":
         logging.basicConfig(filename=log_file('final.log'),mode='w',format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
         for argset in competition_argsets:
             run_prediction(parser=parser,args_in=argset,competition=True)
-    elif args.comptune:
-        logging.basicConfig(filename=args.logfile,mode='w',format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+    elif arguments.comptune:
+        logging.basicConfig(filename=arguments.logfile,mode='w',format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
         for argset in tuning_argsets:
             run_prediction(parser=parser,args_in=argset,competition=True)
     else:
-        logging.basicConfig(filename=args.logfile,mode='w',format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+        logging.basicConfig(filename=arguments.logfile,mode='w',format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
         run_prediction(parser=parser,args_in=args,competition=False)

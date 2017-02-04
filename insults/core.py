@@ -2,7 +2,7 @@ from insults import classifier
 from insults.word_lists.google_bad_words import badwords
 from insults.word_lists.racist_words import racist_list
 from insults.train import run_prediction
-from insults.util import argsets
+from insults.util import argsets, load_model, get_parser
 from nltk.tokenize import word_tokenize
 
 
@@ -28,11 +28,12 @@ class Insults(object):
     classifier_threshold = 0.5
 
     def __init__(self, threshold=None):
-        self.clf  = classifier.load_model()
+        self.clf  = load_model()
         self.threshold = threshold if threshold else Insults.classifier_threshold
         # what else?
 
     def build_model(self):
+        parser = get_parser() # TODO
         for argset in argsets['competition']:
             run_prediction(parser=parser,args_in=argset,competition=True)
 
