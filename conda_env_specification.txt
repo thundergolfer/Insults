@@ -1,4 +1,0 @@
-scikit-learn==0.18.1
-pandas==0.19.2
-futures==2.2.0
-matplotlib==2.0.0
