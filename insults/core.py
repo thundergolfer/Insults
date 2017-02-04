@@ -80,7 +80,7 @@ class Insults(object):
                     next_token = tokens[i+1]
 
                 quoted = False
-                if curr_token.lower() in racist_list:
+                if curr_token.lower() in bad_words:
                     if prev_token.endswith(("'", '"')):
                         if curr_token.endswith(("'",'"')) or next_token.startswith(("'",'"')):
                             quoted = True
