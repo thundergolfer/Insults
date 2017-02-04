@@ -4,7 +4,6 @@ import numpy as np
 import os
 import itertools
 import logging
-import pylab as pl
 import argparse
 import sys
 from concurrent.futures import ThreadPoolExecutor,ProcessPoolExecutor
@@ -90,9 +89,6 @@ def choose_n_iterations(df, show=False):
     work out how many iterations to use, using data stashed during tuning.
     """
     fi = df.mean(axis=1)
-    if show:
-        pl.plot(fi.index,np.array(fi))
-        pl.show()
     chosen = fi.argmax() # used to be fi.index[fi.argmax()]. Think this was outdated
     logging.info("chose %d iterations, projected score %f" % (chosen,fi.max()))
     return chosen, fi.max()

@@ -1,10 +1,18 @@
+import os
 from distutils.core import setup
+from setuptools import find_packages
 from support.commands.py_test import UnitTest
+
+def get_pip_dependencies():
+    this_dir = os.path.abspath(os.path.dirname(__file__))
+    with open(os.path.join(this_dir, 'requirements.txt'), 'r') as pip_requirements:
+        package_list = [package for package in pip_requirements]
+    return package_list
 
 setup(
   name = 'insults',
-  packages = ['insults'], # this must be the same as the name above
-  version = '0.1',
+  packages = find_packages(exclude=['scripts', 'docs', 'tests*']),
+  version = '0.1.9',
   description = 'Identify insulting comments and users on social media',
   author = 'Jonathon Belotti',
   author_email = 'jonathon.bel.melbourne@gmail.com',
@@ -12,6 +20,18 @@ setup(
   download_url = 'https://github.com/thundergolfer/Insult/tarball/0.1', # I'll explain this in a second
   keywords = ['machine-learning', 'social-media', 'community', 'data-science'], # arbitrary keywords
   classifiers = [],
+  install_requires = [
+        'pyparsing==1.5.6',
+        'python-dateutil==2.4.1',
+        'pytest==3.0.6',
+        'Pytz==2016.7',
+        'scikit-learn==0.18.1',
+        'scipy==0.18.1',
+        'six==1.10.0',
+        'pandas==0.19.2',
+        'futures==2.2.0',
+        'nltk==3.0'
+  ],
   cmdclass = {'unit': UnitTest }
 )
 
