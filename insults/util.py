@@ -65,8 +65,8 @@ def save_model( clf, location=SAVEFILE_LOCATION ):
         _ = joblib.dump(clf, fh, compress=9)
 
 
-def load_model( location=SAVEFILE_LOCATION ):
-    load_path = os.path.join(os.path.dirname(__file__), location)
+def load_model( location=SAVEFILE_LOCATION, model_filename=MODEL_FILENAME):
+    load_path = os.path.join(os.path.dirname(__file__), location, model_filename)
     try:
         with open(load_path, 'rb') as fh:
             clf = joblib.load(fh)

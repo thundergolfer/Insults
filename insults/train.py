@@ -1,5 +1,5 @@
 import pandas
-from sklearn import feature_extraction,linear_model, model_selection, pipeline
+from sklearn import model_selection
 import numpy as np
 import os
 import itertools
@@ -19,7 +19,7 @@ from insults.util import (data_file,
                           score,
                           save_model,
                           get_parser)
-from insults.classifier import InsultsSGDRegressor
+from insults.pipeline import make_pipeline
 
 # Dataflow
 # --------
@@ -28,22 +28,6 @@ from insults.classifier import InsultsSGDRegressor
 # training file + chosen parameters -> model
 # labeled test file + model -> predictions -> score
 # unlabeled test file + model -> predictions
-
-class InsultsPipeline(pipeline.Pipeline):
-    """
-    Custom version of scikit-learn's Pipeline class, with an extra method for
-    use in tuning.
-    """
-    def staged_auc(self, X, y):
-        """
-        InsultsPipeline knows about staged_auc, which
-        InsultsSGDRegressor implements and uses.
-        """
-        Xt = X
-        for name, transform in self.steps[:-1]:
-            Xt = transform.transform(Xt)
-        return self.steps[-1][-1].staged_auc(Xt, y)
-
 
 def get_estimates():
     estimate_file = data_file('Estimates','estimates.csv')
@@ -66,25 +50,6 @@ def make_full_training():
     df.to_csv(data_file('Inputs','fulltrain.csv'),index=False)
 
 
-def make_clf(options):
-    return InsultsPipeline([
-                    ('vect', feature_extraction.text.CountVectorizer(
-                                                                     lowercase=False,
-                                                                     analyzer='char',
-                                                                     ngram_range=(1,5)
-                                                                    )
-                    ),
-                    ('tfidf', feature_extraction.text.TfidfTransformer(sublinear_tf=True, norm='l2')),
-                    ("clf",InsultsSGDRegressor(alpha=options.sgd_alpha,
-                                               penalty=options.sgd_penalty,
-                                               learning_rate='constant',
-                                               eta0=options.sgd_eta0,
-                                               max_iter=options.sgd_max_iter,
-                                               n_iter_per_step=options.sgd_n_iter_per_step)
-                    )
-                ])
-
-
 def choose_n_iterations(df, show=False):
     """
     work out how many iterations to use, using data stashed during tuning.
@@ -100,7 +65,7 @@ def tune_one_fold(options, i, train_i, test_i):
     Tune one fold of the data.
     """
     global train
-    clf = make_clf(options)
+    clf = make_pipeline(options)
     ftrain = train[train_i]
     logging.info('fold %d' % i)
     clf.fit(ftrain.Comment, ftrain.Insult)
@@ -179,13 +144,12 @@ def predict(folds, arguments):
     """
     logging.info("Starting predictions")
 
-    clf = make_clf(arguments)
+    clf = make_pipeline(arguments)
     # work out how long to train for final step.
     clf.steps[-1][-1].max_iter,estimated_score = choose_n_iterations(folds)
     clf.steps[-1][-1].reset_args()
 
     clf.fit(train.Comment, train.Insult) # train the classifier
-
     ypred = clf.predict(leaderboard.Comment) # use the trained classifier to classify comments
 
     submission = pandas.DataFrame(dict(Insult=ypred, Comment=leaderboard.Comment, Date=leaderboard.Date), columns=('Insult', 'Date', 'Comment'))

@@ -19,6 +19,7 @@ class InsultsSGDRegressor(linear_model.SGDRegressor):
         self.alpha = alpha
         self.penalty = penalty
         self.reset_args()
+        
     def reset_args(self):
         """
         """

@@ -3,6 +3,8 @@ from insults.word_lists.google_bad_words import badwords
 from insults.word_lists.racist_words import racist_list
 from insults.train import run_prediction
 from insults.util import argsets, load_model, get_parser
+
+import pandas as pd
 from nltk.tokenize import word_tokenize
 
 
@@ -32,7 +34,8 @@ class Insults(object):
         self.threshold = threshold if threshold else Insults.classifier_threshold
         # what else?
 
-    def build_model(self):
+    @classmethod
+    def build_model(cls):
         parser = get_parser() # TODO
         for argset in argsets['competition']:
             run_prediction(parser=parser,args_in=argset,competition=True)
@@ -99,14 +102,12 @@ class Insults(object):
             return foul_words, None
 
 
-    def _rate_comments( comments ):
-        predictions = []
-        for c in list(comments): # listify a single comment if needed
-            predictions.append(self.clf.predict(c))
-        return predictions
+    def _rate_comments( self, comments ):
+        predictions = self.clf.predict(pd.Series(comments))
+        return list(predictions)
 
-    def _detect_racism( comment ):
+    def _detect_racism( self, comment ):
         raise NotImplementedError
 
-    def _detect_sexism( comment ):
+    def _detect_sexism( self, comment ):
         raise NotImplementedError

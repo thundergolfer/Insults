@@ -4,7 +4,7 @@ recursive-include docs/
 #data used for ML
 recursive-include insults/data *
 
-include models/insult_classifier.joblib.pkl
+include insults/models/insult_classifier.joblib.pkl
 
 #Misc
 include README.md
