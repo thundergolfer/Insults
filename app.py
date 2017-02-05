@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from flask import render_template
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask import jsonify
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
@@ -26,12 +27,26 @@ class User(db.Model):
 def home():
     return render_template('index.html')
 
+@app.route('/interactive/')
+def interactive():
+	return render_template('interactive.html')
 
 @app.route('/robots.txt')
 def robots():
     res = app.make_response('User-agent: *\nAllow: /')
     res.mimetype = 'text/plain'
     return res
+
+@app.route('/background_process')
+def background_process():
+	try:
+		lang = request.args.get('proglang', 0, type=str)
+		if lang.lower() == 'python':
+			return jsonify(result='You are wise')
+		else:
+			return jsonify(result='Try again.')
+	except Exception as e:
+		return str(e)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
