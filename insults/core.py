@@ -103,11 +103,13 @@ class Insults(object):
 
 
     def _rate_comments( self, comments ):
+        comments = list([comments])
         # import pdb; pdb.set_trace()
         # predictions = self.clf.predict(pd.Series(comments, name="Comment"))
-        stuff = pd.read_table(data_file('Inputs',"test.csv"),sep=',')
-        predictions = self.clf.predict(stuff.Comment)
-        return predictions
+        stuff = pd.read_table(data_file('Inputs',"final.csv"),sep=',')
+        predictions = self.clf.predict(stuff.Comment.append(pd.Series(comments)))
+        print(predictions)
+        return predictions[-len(comments):] # Hack to get around scale_predictions()
 
     def _detect_racism( self, comment ):
         raise NotImplementedError
