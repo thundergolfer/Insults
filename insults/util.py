@@ -30,7 +30,7 @@ def data_directory(category):
     """
     Create a directory within Data
     """
-    return os.path.join('Data',category)
+    return os.path.join(os.path.dirname(__file__), 'Data',category)
 
 
 def log_file(name):

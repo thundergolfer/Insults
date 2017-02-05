@@ -148,7 +148,6 @@ def predict(folds, arguments):
     # work out how long to train for final step.
     clf.steps[-1][-1].max_iter,estimated_score = choose_n_iterations(folds)
     clf.steps[-1][-1].reset_args()
-
     clf.fit(train.Comment, train.Insult) # train the classifier
     ypred = clf.predict(leaderboard.Comment) # use the trained classifier to classify comments
 

@@ -2,7 +2,7 @@ from insults import classifier
 from insults.word_lists.google_bad_words import badwords
 from insults.word_lists.racist_words import racist_list
 from insults.train import run_prediction
-from insults.util import argsets, load_model, get_parser
+from insults.util import argsets, load_model, get_parser, data_file
 
 import pandas as pd
 from nltk.tokenize import word_tokenize
@@ -103,8 +103,11 @@ class Insults(object):
 
 
     def _rate_comments( self, comments ):
-        predictions = self.clf.predict(pd.Series(comments))
-        return list(predictions)
+        # import pdb; pdb.set_trace()
+        # predictions = self.clf.predict(pd.Series(comments, name="Comment"))
+        stuff = pd.read_table(data_file('Inputs',"test.csv"),sep=',')
+        predictions = self.clf.predict(stuff.Comment)
+        return predictions
 
     def _detect_racism( self, comment ):
         raise NotImplementedError
