@@ -18,6 +18,7 @@ class User(db.Model):
     def __init__(self, name, email):
         self.name = name
         self.email = email
+        self.nothing = 10
 
     def __repr__(self):
         return '<Name %r>' % self.name
