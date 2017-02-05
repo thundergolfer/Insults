@@ -10,7 +10,7 @@ This repository has all the base files ready for deploying a Heroku application,
 $ git clone https://github.com/yuvadm/heroku-python-skeleton.git
 $ cd heroku-python-skeleton
 $ heroku create
-$ git push heroku master
+$ git push heroku-web-app master
 ```
 
 ### Database
