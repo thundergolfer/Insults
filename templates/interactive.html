@@ -4,14 +4,25 @@
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script type=text/javascript>
 			$(function() {
-			  $('a#process_input').bind('click', function() {
-				$.getJSON('/background_process', {
-				  proglang: $('input[name="proglang"]').val(),
+        // Reddit button
+			  $('input#process_reddit').bind('click', function() {
+				$.getJSON('/background_reddit', {
+				  username: $('input[name="username"]').val(),
 				}, function(data) {
-				  $("#result").text(data.result);
+				  $("#insults_result").text(data.result);
 				});
 				return false;
 			  });
+
+        // Twitter button
+        $('input#process_reddit').bind('click', function() {
+        $.getJSON('/background_twitter', {
+          screen_name: $('input[name="screen_name"]').val(),
+        }, function(data) {
+          $("#insults_result").text(data.result);
+        });
+        return false;
+        });
 			});
 		</script>
 	</head>
@@ -24,5 +35,48 @@
 			</form>
 		<p id=result></p>
 		</div>
+    <div class="container">
+      <div class="row">
+            <div class="span12">
+        		    <div class="thumbnail center well well-small text-center">
+                    <h2>Insults - Are you an asshole on social media?</h2>
+
+                    <p>Check your Reddit profile by entering your username below.</p>
+
+                    <form action="" method="post">
+                        <div class="input-prepend"><span class="add-on"><i class="icon-search"></i></span>
+                            <input type="text" id="" name="username" placeholder="thundergolfer">
+                        </div>
+                        <br />
+                        <input id="process_reddit" type="submit" value="Reddit check-up" class="btn" />
+                  </form>
+                </div>
+            </div>
+            <div class="span12">
+              <div class="thumbnail center well well-small text-center">
+
+                    <p>Check a Twitter profile for antisocial tweeting.</p>
+
+                    <form action="" method="post">
+                        <div class="input-prepend"><span class="add-on"><i class="icon-search"></i></span>
+                            <input type="text" id="" name="screen_name" placeholder="jonobelotti_IO">
+                        </div>
+                        <br />
+                        <input id="process_twitter" type="submit" value="Twitter check-up" class="btn" />
+                  </form>
+                </div>
+            </div>
+            <!-- The Results Area -->
+            <div class="span12">
+              <div class="thumbnail center well well-small text-center">
+
+                    <h3>Your Results</h3>
+                    <div>
+                      <p id="insults_result"> </p>
+                    </div>
+                </div>
+            </div>
+    	</div>
+    </div>
 	</body>
 {% endblock %}

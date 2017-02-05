@@ -50,6 +50,28 @@ def background_process():
 	except Exception as e:
 		return str(e)
 
+@app.route('/background_reddit')
+def background_reddit():
+	try:
+		username = request.args.get('username', 0, type=str)
+		if username.lower() == 'python':
+			return jsonify(result='You are wise')
+		else:
+			return jsonify(result='Try again.')
+	except Exception as e:
+		return str(e)
+
+@app.route('/background_twitter')
+def background_twitter():
+	try:
+		screen_name = request.args.get('screen_name', 0, type=str)
+		if screen_name.lower() == 'python':
+			return jsonify(result='You are wise')
+		else:
+			return jsonify(result='Try again.')
+	except Exception as e:
+		return str(e)
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
