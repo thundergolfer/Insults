@@ -46,13 +46,13 @@ class Insults(object):
             return 1 if prediction >= self.threshold else 0
         return prediction
 
-    def checkup_user( comments ):
+    def checkup_user(self, comments ):
         raise NotImplementedError
 
-    def checkup_group( comments, commenters=None, scores=None):
+    def checkup_group(self, comments, commenters=None, scores=None):
         raise NotImplementedError
 
-    def worst_comments( comments, limit=3):
+    def worst_comments(self, comments, limit=3):
         preds = self._rate_comments( comments )
         worst_comment_indexes = sorted(range(len(preds)), key=lambda x: preds[x])[-limit:] # highest score
         worst = []
