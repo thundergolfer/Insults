@@ -1,11 +1,19 @@
 import pytest
 import numpy as np
+from mock import patch
 
 from numpy.testing import assert_equal, assert_array_almost_equal, assert_almost_equal
 from insults import core
 
 insult = core.Insults()
 
+
+def test_rate_comment():
+    assert isinstance(insult.rate_comment("This is a comment"), (int, long, float))
+
+def test_rate_comment_binary():
+    assert isinstance(insult.rate_comment("This is a comment", True), int)
+    assert insult.rate_comment("This is a comment", True) in [0, 1]
 
 def test_foul_language_no_context():
     test_string = """I think the word fuck is a foul word, as is the word cunt."""
