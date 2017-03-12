@@ -193,7 +193,11 @@ class Insults(object):
         return predictions[-len(comments):] # Hack to get around scale_predictions()
 
     def _detect_racism( self, comment ):
-        raise NotImplementedError
+        racist_words, context = self.foul_language([comment], True, racist_list)
+
+        return self._rate_comments(comment), racist_words, context
 
     def _detect_sexism( self, comment ):
-        raise NotImplementedError
+        sexist_words, context = self.foul_language([comment], True, sexist_list)
+
+        return self._rate_comments(comment), sexist_words, context
