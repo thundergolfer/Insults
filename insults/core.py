@@ -1,5 +1,5 @@
 from insults import classifier
-from insults.word_lists.google_bad_words import badwords
+from insults.word_lists.google_bad_words import bad_words
 from insults.word_lists.racist_words import racist_list
 from insults.train import run_prediction
 from insults.util import argsets, load_model, get_parser, data_file

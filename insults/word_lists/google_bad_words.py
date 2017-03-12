@@ -1,5 +1,5 @@
 
-badwords = set([
+bad_words = set([
 'arrse',
 'arse',
 'ass',
