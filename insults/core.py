@@ -155,8 +155,7 @@ class Insults(object):
         """
         # Quoted ('' or "") words are unlikely to be used in
         # a pejorative way
-        if target_set:
-            bad_words = target_set
+        target_set = target_set if target_set else bad_words
 
         foul_words, comment_context = [], []
         for c in comments:
@@ -172,7 +171,7 @@ class Insults(object):
                     else:
                         quote_stack.append(curr_token)
                 # import pdb; pdb.set_trace()
-                if curr_token.lower() in bad_words:
+                if curr_token.lower() in target_set:
                     if len(quote_stack) == 0: # not within quotes
                         foul_words.append(curr_token.lower())
                         if context:
