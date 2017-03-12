@@ -47,12 +47,50 @@ class Insults(object):
         return prediction
 
     def checkup_user(self, comments ):
+        """
+        Assesses a single user's use of insults, and identifies their comments most likely
+        to be considered insulting.
+
+        Args:
+            comments (list): a collection of comments from the user
+
+        Returns:
+            tuple: % of comments that are insulting, list of insulting comments, 'worst' comments
+
+        """
         raise NotImplementedError
 
     def checkup_group(self, comments, commenters=None, scores=None):
+        """
+        Assesses a group's use of insulting comments, and identifies users who most
+        strongly are indicated to employ insults.
+
+        Args:
+            comments (list): a collection of comments, assumedly from a cohesive group (eg. subreddit)
+            commenters (list): commenter IDs associated with each commenter
+            scores (list): scores/points (eg. upvotes) associated with each comment
+
+        Returns:
+            tuple: % of comments that are insulting, list of 'problem users', 'worst' comments
+        """
         raise NotImplementedError
 
     def worst_comments(self, comments, limit=3):
+        """
+        Finds and returns a specified subset of a comment list that have been
+        ranked by the Insults supervised classifier to be most likely insulting.
+
+        Note:   This doesn't necessarily return the 'worst' comments, it more accurately
+                returns the comments which score highest by the classifier.
+
+        Args:
+            comments (list): list of comments to be assessed
+            limit (int): how many 'worst' comments to return
+
+        Returns:
+            list (tuple): worst comments alongside the classifier's score for them
+        """
+
         preds = self._rate_comments( comments )
         worst_comment_indexes = sorted(range(len(preds)), key=lambda x: preds[x])[-limit:] # highest score
         worst = []
@@ -61,14 +99,52 @@ class Insults(object):
         return worst
 
     def racism(self, comments, commenters=None, scores=None):
+        """
+        Finds racist comments using a combination of the Insults supervised
+        classifier and a racist term search.
+
+        Args:
+            comments (list): list of comments to be assessed
+            commenters (list): a commenter id associated with each comment
+            scores (list): the score (eg. upvotes) associated with each comment
+
+        Returns:
+            list: comments which have been detected to be racist
+        """
         raise NotImplementedError
 
     def sexism(self, comments, commenters=None, scores=None):
+        """
+        Finds racist comments using a combination of the Insults supervised
+        classifier and a sexist term search.
+
+        Args:
+            comments (list): list of comments to be assessed
+            commenters (list): a commenter id associated with each comment
+            scores (list): the score (eg. upvotes) associated with each comment
+
+        Returns:
+            list: comments which have been detected to be sexist
+        """
         raise NotImplementedError
 
-    def foul_language(self, comments, context=True ):
+    def foul_language(self, comments, context=True, target_set=None ):
+        """
+        Finds all *direct* use of foul language in a list of comments.
+
+        Args:
+            comments (list): list of comments to be assessed
+            context (bool): whether to return context snippets
+            target_set (set): collection of words to search for
+
+        Returns:
+            tuple (list, list): all foul words found, and optionally their context
+        """
         # Quoted ('' or "") words are unlikely to be used in
         # a pejorative way
+        if target_set:
+            bad_words = target_set
+
         foul_words, comment_context = [], []
         for c in comments:
             tokens = word_tokenize(c) # this doesn't handle quote chars properly
