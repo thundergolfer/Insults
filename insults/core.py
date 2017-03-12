@@ -184,7 +184,8 @@ class Insults(object):
 
 
     def _rate_comments( self, comments ):
-        comments = list([comments])
+        if not isinstance(comments, list):
+            comments = [comments]
         # import pdb; pdb.set_trace()
         # predictions = self.clf.predict(pd.Series(comments, name="Comment"))
         stuff = pd.read_table(data_file('Inputs',"final.csv"),sep=',')

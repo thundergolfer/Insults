@@ -15,6 +15,23 @@ def test_rate_comment_binary():
     assert isinstance(insult.rate_comment("This is a comment", True), int)
     assert insult.rate_comment("This is a comment", True) in [0, 1]
 
+def test_worst_comments():
+    test_comments = ["This is a good comment. I love you.",
+                     "This is an evil comment. Kill yourself you cuck.",
+                     "I don't think we should see each other anymore. Go away.",
+                     "Lyndon Johnson was an American president, I think.",
+                     "Maybe he actually wasn't.",
+                     "No, I'm reasonably sure he was. I remember him. The blonde, ugly one."]
+
+    results_default = insult.worst_comments(test_comments)
+
+    assert len(results_default) == 3
+
+    assert len(insult.worst_comments(test_comments, limit=2)) == 2
+
+    assert isinstance(results_default[0][0], str)
+    assert isinstance(results_default[0][1], (int, float, long))
+
 def test_foul_language_no_context():
     test_string = """I think the word fuck is a foul word, as is the word cunt."""
 
