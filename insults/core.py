@@ -60,42 +60,35 @@ class Insults(object):
             worst.append( (comments[i], preds[i]) )
         return worst
 
-    def racism( comments, commenters=None, scores=None):
+    def racism(self, comments, commenters=None, scores=None):
         raise NotImplementedError
 
-    def sexism( comments, commenters=None, scores=None):
+    def sexism(self, comments, commenters=None, scores=None):
         raise NotImplementedError
 
-    def foul_language( comments, context=True ):
+    def foul_language(self, comments, context=True ):
         # Quoted ('' or "") words are unlikely to be used in
         # a pejorative way
         foul_words, comment_context = [], []
         for c in comments:
-            tokens = word_tokenize(c)
+            tokens = word_tokenize(c) # this doesn't handle quote chars properly
+            quote_stack = []
             for i, curr_token in enumerate(tokens):
-                if i == 0:
-                    prev_token = ""
-                    next_token = tokens[i+1]
-                elif i == len(tokens) - 1:
-                    prev_token = tokens[i-1]
-                    next_token = ""
-                else:
-                    prev_token = tokens[i-1]
-                    next_token = tokens[i+1]
-
                 quoted = False
+                if curr_token in ["''", "'", '"', '``']:
+                    if len(quote_stack) == 0:
+                        quote_stack.append(curr_token)
+                    elif quote_stack[-1] == curr_token:
+                        del quote_stack[-1]
+                    else:
+                        quote_stack.append(curr_token)
+                # import pdb; pdb.set_trace()
                 if curr_token.lower() in bad_words:
-                    if prev_token.endswith(("'", '"')):
-                        if curr_token.endswith(("'",'"')) or next_token.startswith(("'",'"')):
-                            quoted = True
-                    elif curr_token.startswith(("'",'"')):
-                        if curr_token.endswith(("'",'"')) or next_token.startswith(("'",'"')):
-                            quoted = True
-                if not quoted:
-                    foul_words.append(curr_token.lower())
-                    if context:
-                        token_i = c.index(curr_token)
-                        comment_context.append(c[token_i-20:token_i+20])
+                    if len(quote_stack) == 0: # not within quotes
+                        foul_words.append(curr_token.lower())
+                        if context:
+                            token_i = c.index(curr_token)
+                            comment_context.append(c[token_i-20:token_i+20])
         if context:
             return foul_words, comment_context
         else:
