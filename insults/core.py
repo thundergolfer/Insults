@@ -36,11 +36,24 @@ class Insults(object):
 
     @classmethod
     def build_model(cls):
+        """
+        Train the supervised classifier to prepare the Insults library for use.
+        """
         parser = get_parser() # TODO
         for argset in argsets['competition']:
             run_prediction(parser=parser,args_in=argset,competition=True)
 
     def rate_comment(self, comment, binary=False):
+        """
+        Assess a comment using the Insults supervised classifier.
+
+        Args:
+            comment (string): a comment, preferably a sentence, and not a paragraph
+
+        Returns:
+            int/float: the classifier's score (0 -> not an insult, 1 -> insult)
+        """
+
         prediction = self._rate_comments( comment )[0]
         if binary:
             return 1 if prediction >= self.threshold else 0
