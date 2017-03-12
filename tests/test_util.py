@@ -4,6 +4,7 @@ import numpy as np
 from numpy.testing import assert_equal, assert_array_almost_equal, assert_almost_equal
 from insults import util
 
+
 def test_data_file():
     path = util.data_file("test_category")
     path_two = util.data_file("test_category", name="test_name")
