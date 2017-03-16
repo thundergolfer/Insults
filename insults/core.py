@@ -71,7 +71,14 @@ class Insults(object):
             tuple: % of comments that are insulting, list of insulting comments, 'worst' comments
 
         """
-        raise NotImplementedError
+
+        ratings = self._rate_comments(comments)
+        rated_comments = zip(comments, ratings).sort(key=lambda x: x[1], reverse=True)
+
+        insults = [i[0] for i in rated_comments if i[1] >= self.threshold].sort(key=lambda x: x[1], reverse=True)
+        LIMIT_WORST = 3
+
+        return len(insults)/float(len(comments)), insults, insults[:LIMIT_WORST]
 
     def checkup_group(self, comments, commenters=None, scores=None):
         """
@@ -86,7 +93,19 @@ class Insults(object):
         Returns:
             tuple: % of comments that are insulting, list of 'problem users', 'worst' comments
         """
-        raise NotImplementedError
+
+        ratings = self._rate_comments(comments)
+        rated_comments_with_authors = zip(comments, ratings, commenters).sort(key=lambda x: x[1], reverse=True)
+
+        rated_insults_with_authors = [i for i in rated_comments_with_authors if i[1] > self.threshold].sort(key=lambda x: x[1], reverse=True)
+        users_insults_tallied = Counter([i[2] for i in rated_insults_with_authors])
+        # problem_users = sorted(list(users_tallied), key=lambda x: users_tallied[x], reverse=True)
+        problem_users = [user for user in users_insults_tallied if users_insults_tallied[user] > 3] # TODO bit arbitrary
+
+        LIMIT_WORST = 3
+
+        return len(rated_insults_with_authors)/len(comments), problem_users, rated_insults_with_authors[:LIMIT_WORST]
+
 
     def worst_comments(self, comments, limit=3):
         """
