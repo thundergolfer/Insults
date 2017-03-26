@@ -1,7 +1,6 @@
 import os
 from distutils.core import setup
 from setuptools import find_packages
-from support.commands.py_test import UnitTest
 
 def get_pip_dependencies():
     this_dir = os.path.abspath(os.path.dirname(__file__))
@@ -77,10 +76,7 @@ setup(
             ],
         'models':
             ['models/insult_classifier.joblib.pkl']
-    },
-
-
-  cmdclass = {'unit': UnitTest }
+    }
 )
 
 ## FOR download_url
