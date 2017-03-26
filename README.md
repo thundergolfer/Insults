@@ -1,4 +1,4 @@
-# Insults
+# Insults [![Build Status](https://travis-ci.com/thundergolfer/Insults.svg?token=yHGWQ42iK2BPk1FjaUMc&branch=master)](https://travis-ci.com/thundergolfer/Insults)
 
 ### Usage
 
