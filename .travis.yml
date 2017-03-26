@@ -1,0 +1,15 @@
+language: python
+python: "2.7"
+sudo: required
+dist: trusty
+env:
+  matrix:
+    - COMMAND="python -m pytest tests/"
+    - COMMAND="./run_flake8.sh"
+install:
+  - ./install_miniconda.sh
+  - ./install_local.sh
+branches:
+  only: [master]
+script:
+  - ./run_in_environment.sh $COMMAND
