@@ -28,11 +28,11 @@ class Insults(object):
     """
 
     classifier_threshold = 0.5
+    clf = None
 
-    def __init__(self, threshold=None):
-        self.clf  = load_model()
-        self.threshold = threshold if threshold else Insults.classifier_threshold
-        # what else?
+    @classmethod
+    def load_model(cls):
+        clf = load_model()
 
     @classmethod
     def build_model(cls):
@@ -43,7 +43,8 @@ class Insults(object):
         for argset in argsets['competition']:
             run_prediction(parser=parser,args_in=argset,competition=True)
 
-    def rate_comment(self, comment, binary=False):
+    @classmethod
+    def rate_comment(cls, comment, binary=False):
         """
         Assess a comment using the Insults supervised classifier.
 
@@ -54,12 +55,13 @@ class Insults(object):
             int/float: the classifier's score (0 -> not an insult, 1 -> insult)
         """
 
-        prediction = self._rate_comments( comment )[0]
+        prediction = cls._rate_comments( comment )[0]
         if binary:
-            return 1 if prediction >= self.threshold else 0
+            return 1 if prediction >= cls.classifier_threshold else 0
         return prediction
 
-    def checkup_user(self, comments ):
+    @classmethod
+    def checkup_user(cls, comments ):
         """
         Assesses a single user's use of insults, and identifies their comments most likely
         to be considered insulting.
@@ -72,15 +74,16 @@ class Insults(object):
 
         """
 
-        ratings = self._rate_comments(comments)
+        ratings = cls._rate_comments(comments)
         rated_comments = zip(comments, ratings).sort(key=lambda x: x[1], reverse=True)
 
-        insults = [i[0] for i in rated_comments if i[1] >= self.threshold].sort(key=lambda x: x[1], reverse=True)
+        insults = [i[0] for i in rated_comments if i[1] >= cls.classifier_threshold].sort(key=lambda x: x[1], reverse=True)
         LIMIT_WORST = 3
 
         return len(insults)/float(len(comments)), insults, insults[:LIMIT_WORST]
 
-    def checkup_group(self, comments, commenters=None, scores=None):
+    @classmethod
+    def checkup_group(cls, comments, commenters=None, scores=None):
         """
         Assesses a group's use of insulting comments, and identifies users who most
         strongly are indicated to employ insults.
@@ -94,10 +97,10 @@ class Insults(object):
             tuple: % of comments that are insulting, list of 'problem users', 'worst' comments
         """
 
-        ratings = self._rate_comments(comments)
+        ratings = cls._rate_comments(comments)
         rated_comments_with_authors = zip(comments, ratings, commenters).sort(key=lambda x: x[1], reverse=True)
 
-        rated_insults_with_authors = [i for i in rated_comments_with_authors if i[1] > self.threshold].sort(key=lambda x: x[1], reverse=True)
+        rated_insults_with_authors = [i for i in rated_comments_with_authors if i[1] > cls.classifier_threshold].sort(key=lambda x: x[1], reverse=True)
         users_insults_tallied = Counter([i[2] for i in rated_insults_with_authors])
         # problem_users = sorted(list(users_tallied), key=lambda x: users_tallied[x], reverse=True)
         problem_users = [user for user in users_insults_tallied if users_insults_tallied[user] > 3] # TODO bit arbitrary
@@ -106,8 +109,8 @@ class Insults(object):
 
         return len(rated_insults_with_authors)/len(comments), problem_users, rated_insults_with_authors[:LIMIT_WORST]
 
-
-    def worst_comments(self, comments, limit=3):
+    @classmethod
+    def worst_comments(cls, comments, limit=3):
         """
         Finds and returns a specified subset of a comment list that have been
         ranked by the Insults supervised classifier to be most likely insulting.
@@ -123,14 +126,15 @@ class Insults(object):
             list (tuple): worst comments alongside the classifier's score for them
         """
 
-        preds = self._rate_comments( comments )
+        preds = cls._rate_comments( comments )
         worst_comment_indexes = sorted(range(len(preds)), key=lambda x: preds[x])[-limit:] # highest score
         worst = []
         for i in worst_comment_indexes:
             worst.append( (comments[i], preds[i]) )
         return worst
 
-    def racism(self, comments, commenters=None, scores=None):
+    @classmethod
+    def racism(cls, comments, commenters=None, scores=None):
         """
         Finds racist comments using a combination of the Insults supervised
         classifier and a racist term search.
@@ -145,7 +149,8 @@ class Insults(object):
         """
         raise NotImplementedError
 
-    def sexism(self, comments, commenters=None, scores=None):
+    @classmethod
+    def sexism(cls, comments, commenters=None, scores=None):
         """
         Finds racist comments using a combination of the Insults supervised
         classifier and a sexist term search.
@@ -160,7 +165,8 @@ class Insults(object):
         """
         raise NotImplementedError
 
-    def foul_language(self, comments, context=True, target_set=None ):
+    @classmethod
+    def foul_language(cls, comments, context=True, target_set=None ):
         """
         Finds all *direct* use of foul language in a list of comments.
 
@@ -202,21 +208,24 @@ class Insults(object):
             return foul_words, None
 
 
-    def _rate_comments( self, comments ):
+    @classmethod
+    def _rate_comments(cls, comments ):
         if not isinstance(comments, list):
             comments = [comments]
         # import pdb; pdb.set_trace()
-        # predictions = self.clf.predict(pd.Series(comments, name="Comment"))
+        # predictions = cls.clf.predict(pd.Series(comments, name="Comment"))
         stuff = pd.read_table(data_file('Inputs',"final.csv"),sep=',')
-        predictions = self.clf.predict(stuff.Comment.append(pd.Series(comments)))
+        predictions = cls.clf.predict(stuff.Comment.append(pd.Series(comments)))
         return predictions[-len(comments):] # Hack to get around scale_predictions()
 
-    def _detect_racism( self, comment ):
-        racist_words, context = self.foul_language([comment], True, racist_list)
+    @classmethod
+    def _detect_racism(cls, comment ):
+        racist_words, context = cls.foul_language([comment], True, racist_list)
 
-        return self._rate_comments(comment), racist_words, context
+        return cls._rate_comments(comment), racist_words, context
 
-    def _detect_sexism( self, comment ):
-        sexist_words, context = self.foul_language([comment], True, sexist_list)
+    @classmethod
+    def _detect_sexism(cls, comment ):
+        sexist_words, context = cls.foul_language([comment], True, sexist_list)
 
-        return self._rate_comments(comment), sexist_words, context
+        return cls._rate_comments(comment), sexist_words, context
