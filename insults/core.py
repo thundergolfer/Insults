@@ -32,7 +32,7 @@ class Insults(object):
 
     @classmethod
     def load_model(cls):
-        clf = load_model()
+        cls.clf = load_model()
 
     @classmethod
     def build_model(cls):
