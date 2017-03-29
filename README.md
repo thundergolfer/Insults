@@ -3,7 +3,10 @@
 ### Usage
 
 ```python
-coming soon
+from insults import Insults
+
+comment = "You are a disgusting maggot of a person."
+Insults.rate_comment(comment)
 ```
 
 ```python
