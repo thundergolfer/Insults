@@ -1,5 +1,9 @@
 # Insults [![Build Status](https://travis-ci.com/thundergolfer/Insults.svg?token=yHGWQ42iK2BPk1FjaUMc&branch=master)](https://travis-ci.com/thundergolfer/Insults)
 
+**TLDR: This project is very similar in functionality and purpose to Google's recent Perspective API project** ![Imgur](http://i.imgur.com/kzLNj2z.png)
+
+-----
+
 ### Usage
 
 ```python
