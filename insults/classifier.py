@@ -80,6 +80,7 @@ class InsultsSGDRegressor(linear_model.SGDRegressor):
 
         return scale_predictions(linear_model.SGDRegressor.predict(self,X))
 
+
 def scale_predictions(ypred):
     """
     normalize range of predictions to 0-1.
