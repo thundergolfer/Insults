@@ -11,13 +11,15 @@
 
 >>> comment = "You are a disgusting maggot of a person."
 >>> Insults.rate_comment(comment)
-0.89
+```
+
+`0.89`
 
 ```python
 >>> comments = ["You called me a 'dickhead', so I'll say you're a cunt.", "These shitakes taste like shit."]
 >>> Insults.foul_language(comments, context=False)
-['cunt', 'shit'], None
 ```
+`['cunt', 'shit'], None`
 
 ### Installation [Package]
 
