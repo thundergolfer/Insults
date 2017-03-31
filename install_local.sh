@@ -37,3 +37,6 @@ pip install -r "${requirements_pip_file}"
 
 # Required to fix an installation error
 #$conda_command update pyside
+
+# Install NLTK data for tokenization
+python -m nltk.downloader punkt
