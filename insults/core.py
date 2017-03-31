@@ -134,38 +134,6 @@ class Insults(object):
         return worst
 
     @classmethod
-    def racism(cls, comments, commenters=None, scores=None):
-        """
-        Finds racist comments using a combination of the Insults supervised
-        classifier and a racist term search.
-
-        Args:
-            comments (list): list of comments to be assessed
-            commenters (list): a commenter id associated with each comment
-            scores (list): the score (eg. upvotes) associated with each comment
-
-        Returns:
-            list: comments which have been detected to be racist
-        """
-        raise NotImplementedError
-
-    @classmethod
-    def sexism(cls, comments, commenters=None, scores=None):
-        """
-        Finds racist comments using a combination of the Insults supervised
-        classifier and a sexist term search.
-
-        Args:
-            comments (list): list of comments to be assessed
-            commenters (list): a commenter id associated with each comment
-            scores (list): the score (eg. upvotes) associated with each comment
-
-        Returns:
-            list: comments which have been detected to be sexist
-        """
-        raise NotImplementedError
-
-    @classmethod
     def foul_language(cls, comments, context=True, target_set=None ):
         """
         Finds all *direct* use of foul language in a list of comments.
@@ -207,7 +175,6 @@ class Insults(object):
         else:
             return foul_words, None
 
-
     @classmethod
     def _rate_comments(cls, comments ):
         if not isinstance(comments, list):
@@ -217,15 +184,3 @@ class Insults(object):
         stuff = pd.read_table(data_file('Inputs',"final.csv"),sep=',')
         predictions = cls.clf.predict(stuff.Comment.append(pd.Series(comments)))
         return predictions[-len(comments):] # Hack to get around scale_predictions()
-
-    @classmethod
-    def _detect_racism(cls, comment ):
-        racist_words, context = cls.foul_language([comment], True, racist_list)
-
-        return cls._rate_comments(comment), racist_words, context
-
-    @classmethod
-    def _detect_sexism(cls, comment ):
-        sexist_words, context = cls.foul_language([comment], True, sexist_list)
-
-        return cls._rate_comments(comment), sexist_words, context
