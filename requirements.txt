@@ -3,9 +3,7 @@ python-dateutil==2.4.1
 pytest==3.0.6
 mock==2.0.0
 flake8==2.3.0
-Pytz==2016.7
-scikit-learn==0.18.1
-scipy==0.18.1
+Pytz==2017.2
 six==1.10.0
 pandas==0.19.2
 futures==2.2.0
