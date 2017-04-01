@@ -67,7 +67,25 @@ class TestCheckupUser():
         percentage_insulting, insults, worst = Insults.checkup_user(self.test_user_comments)
 
         assert percentage_insulting == 2/7.0
+        assert self.test_user_comments[2] in insults and self.test_user_comments[3] in insults
+        assert_equal([self.test_user_comments[2], self.test_user_comments[3]], worst)
 
+
+class TestCheckupGroup():
+    @classmethod
+    def setup_class(cls):
+        Insults.clf = DeterministicMockModel([0.13, 0.10, 0.89, 0.50, 0.49, 0.21, 0.29])
+        Insults.classifier_threshold = 0.50
+
+    @classmethod
+    def teardown_class(cls):
+        Insults.clf = MockModel()
+        Insults.classifier_threshold = 0.50
+
+    def test_checkup_user_empty(self):
+        percentage_insulting, insults, worst = Insults.checkup_group([])
+
+        assert percentage_insulting is None and insults == [] and worst == []
 
 class TestWorstComments():
 

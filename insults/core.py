@@ -80,7 +80,6 @@ class Insults(object):
         ratings = cls._rate_comments(comments)
         rated_comments = sorted(zip(comments, ratings), key=lambda x: x[1], reverse=True)
 
-        import pdb; pdb.set_trace()
         insults = sorted([i[0] for i in rated_comments if i[1] >= cls.classifier_threshold], key=lambda x: x[1], reverse=True)
         LIMIT_WORST = 3
 
@@ -100,6 +99,8 @@ class Insults(object):
         Returns:
             tuple: % of comments that are insulting, list of 'problem users', 'worst' comments
         """
+        if not comments:
+            return None, [], []
 
         ratings = cls._rate_comments(comments)
         rated_comments_with_authors = sorted(zip(comments, ratings, commenters), key=lambda x: x[1], reverse=True)
