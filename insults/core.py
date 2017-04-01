@@ -74,10 +74,14 @@ class Insults(object):
 
         """
 
-        ratings = cls._rate_comments(comments)
-        rated_comments = zip(comments, ratings).sort(key=lambda x: x[1], reverse=True)
+        if not comments:
+            return None, [], []
 
-        insults = [i[0] for i in rated_comments if i[1] >= cls.classifier_threshold].sort(key=lambda x: x[1], reverse=True)
+        ratings = cls._rate_comments(comments)
+        rated_comments = sorted(zip(comments, ratings), key=lambda x: x[1], reverse=True)
+
+        import pdb; pdb.set_trace()
+        insults = sorted([i[0] for i in rated_comments if i[1] >= cls.classifier_threshold], key=lambda x: x[1], reverse=True)
         LIMIT_WORST = 3
 
         return len(insults)/float(len(comments)), insults, insults[:LIMIT_WORST]
@@ -98,9 +102,9 @@ class Insults(object):
         """
 
         ratings = cls._rate_comments(comments)
-        rated_comments_with_authors = zip(comments, ratings, commenters).sort(key=lambda x: x[1], reverse=True)
+        rated_comments_with_authors = sorted(zip(comments, ratings, commenters), key=lambda x: x[1], reverse=True)
 
-        rated_insults_with_authors = [i for i in rated_comments_with_authors if i[1] > cls.classifier_threshold].sort(key=lambda x: x[1], reverse=True)
+        rated_insults_with_authors = sorted([i for i in rated_comments_with_authors if i[1] > cls.classifier_threshold], key=lambda x: x[1], reverse=True)
         users_insults_tallied = Counter([i[2] for i in rated_insults_with_authors])
         # problem_users = sorted(list(users_tallied), key=lambda x: users_tallied[x], reverse=True)
         problem_users = [user for user in users_insults_tallied if users_insults_tallied[user] > 3] # TODO bit arbitrary
@@ -151,8 +155,8 @@ class Insults(object):
         target_set = target_set if target_set else bad_words
 
         foul_words, comment_context = [], []
-        for c in comments:
-            tokens = word_tokenize(c) # this doesn't handle quote chars properly
+        for comm in comments:
+            tokens = word_tokenize(comm) # this doesn't handle quote chars properly
             quote_stack = []
             for i, curr_token in enumerate(tokens):
                 quoted = False
@@ -163,13 +167,18 @@ class Insults(object):
                         del quote_stack[-1]
                     else:
                         quote_stack.append(curr_token)
-                # import pdb; pdb.set_trace()
+
                 if curr_token.lower() in target_set:
                     if len(quote_stack) == 0: # not within quotes
                         foul_words.append(curr_token.lower())
                         if context:
-                            token_i = c.index(curr_token)
-                            comment_context.append(c[token_i-20:token_i+20])
+                            token_i = comm.index(curr_token)
+                            try:
+                                end_context = comm[token_i+20:].index(' ') + (token_i + 20)
+                            except ValueError:
+                                end_context = len(comm)
+
+                            comment_context.append(comm[max(0,token_i-20):end_context])
         if context:
             return foul_words, comment_context
         else:
