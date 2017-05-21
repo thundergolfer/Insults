@@ -10,6 +10,7 @@
 >>> from insults import Insults
 
 >>> comment = "You are a disgusting maggot of a person."
+>>> Insults.load_model()
 >>> Insults.rate_comment(comment)
 ```
 
