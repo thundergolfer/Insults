@@ -1,37 +1,39 @@
 """
 Insults
------
+---------
 TLDR: This project is very similar in functionality and purpose to Google's recent `Perspective API <https://www.perspectiveapi.com/>`_ project
 
 Usage
 ````````````
-Save in a hello.py:
-.. code:: python
+
+Save in a hello.py: ::
+
     from insults import Insults
 
     comment = "You are a disgusting maggot of a person."
+
     Insults.load_model()
+
     Insults.rate_comment(comment)
 
 > 0.89
 
 Install
 `````````````````
-And run it:
-.. code:: bash
-    $ pip install insults
+With PIP and this command: ::
+
+   $ pip install insults
 
 Links
 `````
 * `Perspective API website <https://www.perspectiveapi.com/>`_
-* `Github Repo:
-  <https://github.com/thundergolfer/Insults>`_
+* `Github Repo: <https://github.com/thundergolfer/Insults>`_
 
 
 Credit
 ``````
-* `cbrew` <https://github.com/cbrew>`_ for their original data-science work in
-`Imperium's Kaggle Competition` <https://www.kaggle.com/c/detecting-insults-in-social-commentary>`_. Code in `cbrew/Insults <https://github.com/cbrew/Insults`_
+
+* `cbrew <https://github.com/cbrew>`_ for their original data-science work in `Imperium's Kaggle Competition <https://www.kaggle.com/c/detecting-insults-in-social-commentary>`_. Code in `cbrew/Insults <https://github.com/cbrew/Insults>`_
 
 """
 
