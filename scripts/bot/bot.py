@@ -35,9 +35,9 @@ def safer_mark_read(reddit, comment):
     reddit.inbox.mark_read([comment])
     comment.mark_read()
 
-def reply_with_prediction(model, reddit, comment):
+def reply_with_prediction(reddit, comment):
     clean_body = clean_comment(comment.body)
-    prediction = bot_predict.predict(model, clean_body)
+    prediction = bot_predict.predict(clean_body)
     reply_body = "Is it an insult? Chances are: {}".format(prediction)
     comment.reply(reply_body + '\n\n' + comment_sign_off(prediction))
     print("Reply sent to: ", comment.author)
@@ -61,7 +61,7 @@ def run(reddit, model):
     for comment in reddit.inbox.unread():
         if 'u/insults_bot' in comment.body:
             print(comment.body)
-            reply_with_prediction(model, reddit, comment)
+            reply_with_prediction(reddit, comment)
             safer_mark_read(reddit, comment)
         time.sleep(5)
 
@@ -70,7 +70,6 @@ if __name__ == '__main__':
     r = praw.Reddit(user_agent=USERAGENT, client_id=CLIENT_ID, client_secret=CLIENT_SECRET, username=USERNAME, password=PASSWORD)
 
     while True:
-        model = bot_predict.load_model(PATH)
         try:
             run(r, model)
         except Exception as e:
