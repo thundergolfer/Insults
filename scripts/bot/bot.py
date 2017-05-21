@@ -2,18 +2,12 @@
 import praw # simple interface to the reddit API, also handles rate limiting of requests
 import time
 import random
+import os
 
 import bot_predict
 
 '''USER CONFIGURATION'''
 
-USERNAME  = ""
-# This is the bot's Username. In order to send mail, he must have some amount of Karma.
-PASSWORD  = ""
-# This is the bot's Password. 
-USERAGENT = ""
-# This is a short description of what the bot does. For example "/u/GoldenSights' Newsletter bot"
-# Famous People
 MAXPOSTS = 100
 # This is how many posts you want to retrieve all at once. PRAW can download 100 at a time.
 MAXLENGTH = 150
@@ -26,20 +20,16 @@ PATH = 'model/predictor.pkl'
 '''All done!'''
 
 
-
-
 WAITS = str(WAIT)
-try:
-    from credentials import credentials #This is a file in my python library which contains my Bot's username and password. I can push code to Git without showing credentials
-    USERNAME = credentials['username']
-    PASSWORD = credentials['password']
-    USERAGENT = credentials['user-agent']
-    CLIENT_ID = credentials['client_id']
-    CLIENT_SECRET = credentials['client_secret']
-except ImportError:
-    pass
 
-cutoff = len(USERNAME) + 4
+def init_values():
+    USERNAME = os.environ['REDDIT_BOT_USERNAME']
+    PASSWORD = os.environ['REDDIT_BOT_PW']
+    USERAGENT = os.environ['REDDIT_BOT_USER_AGENT']
+    CLIENT_ID = os.environ['REDDIT_BOT_CLIENT_ID']
+    CLIENT_SECRET = os.environ['REDDIT_BOT_CLIENT_SECRET']
+
+    return USERNAME, PASSWORD, USERAGENT, CLIENT_ID, CLIENT_SECRET
 
 def safer_mark_read(reddit, comment):
     reddit.inbox.mark_read([comment])
@@ -75,14 +65,15 @@ def run(reddit, model):
             safer_mark_read(reddit, comment)
         time.sleep(5)
 
-r = praw.Reddit(user_agent=USERAGENT, client_id=CLIENT_ID, client_secret=CLIENT_SECRET, username=USERNAME, password=PASSWORD)
+if __name__ == '__main__':
+    USERNAME, PASSWORD, USERAGENT, CLIENT_ID, CLIENT_SECRET = init_values()
+    r = praw.Reddit(user_agent=USERAGENT, client_id=CLIENT_ID, client_secret=CLIENT_SECRET, username=USERNAME, password=PASSWORD)
 
-while True:
-    model = bot_predict.load_model(PATH)
-    try:
-        run(r, model)
-    except Exception as e:
-        print('An error has occured:', str(e))
-    print('Running again in ' + WAITS + ' seconds \n')
-    time.sleep(WAIT)
- 
+    while True:
+        model = bot_predict.load_model(PATH)
+        try:
+            run(r, model)
+        except Exception as e:
+            print('An error has occured:', str(e))
+        print('Running again in ' + WAITS + ' seconds \n')
+        time.sleep(WAIT)
