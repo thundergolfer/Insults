@@ -17,7 +17,7 @@
 `0.89`
 
 ```python
->>> comments = ["You called me a 'dickhead', so I'll say you're a cunt.", "These shitakes taste like shit."]
+>>> comments = ["You called me a \"dickhead\", so I'll say you're a cunt.", "These shitakes taste like shit."]
 >>> Insults.foul_language(comments, context=False)
 ```
 `['cunt', 'shit'], None`
