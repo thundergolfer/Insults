@@ -166,6 +166,8 @@ class Insults(object):
                         quote_stack.append(curr_token)
                     elif quote_stack[-1] == curr_token:
                         del quote_stack[-1]
+                    elif quote_stack[-1] in ["''", "``"] and curr_token in ["''", "``"]:
+                        del quote_stack[-1]
                     else:
                         quote_stack.append(curr_token)
 
