@@ -4,7 +4,7 @@
 
 -----
 
-### Usage
+### Basic Usage
 
 ```python
 >>> from insults import Insults
@@ -24,7 +24,9 @@
 
 ### Installation [Package]
 
-`coming soon`
+**Note:** This package is compatible with *Python 2* only
+
+`pip install insults`
 
 ### Installation [Development]
 
