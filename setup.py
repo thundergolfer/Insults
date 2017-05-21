@@ -13,7 +13,7 @@ setup(
 
   packages = find_packages(exclude=['scripts', 'docs', 'tests*']),
 
-  version = '0.1.9',
+  version = '0.1.10',
 
   description = 'Identify insulting comments and users on social media',
 
