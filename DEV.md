@@ -16,3 +16,13 @@
 #### Install package from **testpypi**
 
 `pip install --extra-index-url https://testpypi.python.org/pypi insults`
+
+-----
+
+#### Push only bot files to Heroku app
+
+`git subtree push --prefix scripts/bot heroku master`
+
+##### Force Push
+
+`git push heroku `git subtree split --prefix scripts/bot `:master --force`
