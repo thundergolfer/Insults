@@ -19,6 +19,8 @@
 
 -----
 
+**Bot App Name on Heroku:** cryptic-retreat-93643
+
 #### Push only bot files to Heroku app
 
 `git subtree push --prefix scripts/bot heroku master`
