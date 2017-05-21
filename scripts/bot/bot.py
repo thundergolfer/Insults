@@ -56,7 +56,7 @@ def comment_sign_off(comment_rating):
     else:
         return random.choice(good_list)
 
-def run(reddit, model):
+def run(reddit):
     print("running!")
     for comment in reddit.inbox.unread():
         if 'u/insults_bot' in comment.body:
@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
     while True:
         try:
-            run(r, model)
+            run(r)
         except Exception as e:
             print('An error has occured:', str(e))
         print('Running again in ' + WAITS + ' seconds \n')
