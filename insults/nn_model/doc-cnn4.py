@@ -14,7 +14,9 @@ import sys
 import os
 
 from insults.nn_model.util import binarize, binarize_outshape, striphtml, clean
-from insults.nn_model.plumbing import load_data
+from insults.nn_model.plumbing import load_data, extract_documents_with_their_sentiments
+from insults.nn_model.plumbing import sentence_count_per_doc, charset, chars_to_indices_vec
+from insults.nn_model.plumbing import shuffle_dataset, dataset_split
 
 MAXLEN = 512
 MAX_SENTENCES = 15
@@ -33,22 +35,10 @@ if len(sys.argv) == 2:
 
 data = load_data(DATA_FILE)
 
-txt = ''
-docs, sentences, sentiments = [], [], []
+docs, sentiments = extract_documents_with_their_sentiments(data)
 
-for cont, sentiment in zip(data.review, data.sentiment):
-    sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s', clean(striphtml(cont)))
-    sentences = [sent.lower() for sent in sentences]
-    docs.append(sentences)
-    sentiments.append(sentiment)
-
-num_sent = []
-for doc in docs:
-    num_sent.append(len(doc))
-    for s in doc:
-        txt += s
-
-chars = set(txt)
+num_sent = sentence_count_per_doc(docs)
+chars = charset(docs)
 
 print('total chars:', len(chars))
 char_indices = dict((c, i) for i, c in enumerate(chars))
@@ -56,30 +46,14 @@ indices_char = dict((i, c) for i, c in enumerate(chars))
 
 print('Sample doc{}'.format(docs[1200]))
 
-X = np.ones((len(docs), MAX_SENTENCES, MAXLEN), dtype=np.int64) * -1
+X = chars_to_indices_vec(docs, char_indices, MAX_SENTENCES, MAXLEN)
 y = np.array(sentiments)
-
-for i, doc in enumerate(docs):
-    for j, sentence in enumerate(doc):
-        if j < MAX_SENTENCES:
-            for t, char in enumerate(sentence[-MAXLEN:]):
-                X[i, j, (MAXLEN - 1 - t)] = char_indices[char]
 
 print('Sample X:{}'.format(X[1200, 2]))
 print('y:{}'.format(y[1200]))
 
-ids = np.arange(len(X))
-np.random.shuffle(ids)
-
-# shuffle
-X = X[ids]
-y = y[ids]
-
-X_train = X[:20000]
-X_test = X[22500:]
-
-y_train = y[:20000]
-y_test = y[22500:]
+X, y = shuffle_dataset(X, y)
+X_train, X_test, y_train, y_test = dataset_split(X, y)
 
 
 def char_block(in_layer, nb_filter=(64, 100), filter_length=(3, 3), subsample=(2, 1), pool_length=(2, 2)):
