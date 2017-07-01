@@ -30,7 +30,7 @@
 
 ### Installation [Development]
 
-If you'd like to contribute and hack on the newspaper project, feel free to clone a development version of this repository locally:
+If you'd like to contribute and hack on this project, feel free to clone a development version of this repository locally:
 
 `git clone git://github.com/thundergolfer/Insults.git`
 
