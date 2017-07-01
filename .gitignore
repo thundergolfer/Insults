@@ -1,3 +1,7 @@
+# Installer script files
+install_numbats.sh
+script/app_installer.sh
+
 *.pkl
 
 # Byte-compiled / optimized / DLL files
