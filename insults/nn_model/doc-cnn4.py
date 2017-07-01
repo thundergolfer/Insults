@@ -14,9 +14,11 @@ import sys
 import os
 
 from insults.nn_model.util import binarize, binarize_outshape, striphtml, clean
+from insults.nn_model.plumbing import load_data
 
 MAXLEN = 512
 MAX_SENTENCES = 15
+DATA_FILE = "labeledTrainData.tsv"
 
 total = len(sys.argv)
 cmdargs = str(sys.argv)
@@ -29,11 +31,10 @@ if len(sys.argv) == 2:
         print ("Checkpoint : %s" % str(sys.argv[1]))
         checkpoint = str(sys.argv[1])
 
-data = pd.read_csv("labeledTrainData.tsv", header=0, delimiter="\t", quoting=3)
+data = load_data(DATA_FILE)
+
 txt = ''
-docs = []
-sentences = []
-sentiments = []
+docs, sentences, sentiments = [], [], []
 
 for cont, sentiment in zip(data.review, data.sentiment):
     sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s', clean(striphtml(cont)))
