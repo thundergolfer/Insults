@@ -11,34 +11,8 @@ import keras.callbacks
 import sys
 import os
 
-
-def binarize(x, sz=71):
-    return tf.to_float(tf.one_hot(x, sz, on_value=1, off_value=0, axis=-1))
-
-
-def binarize_outshape(in_shape):
-    return in_shape[0], in_shape[1], 71
-
-
-def striphtml(html):
-    p = re.compile(r'<.*?>')
-    return p.sub('', html)
-
-
-def clean(s):
-    return re.sub(r'[^\x00-\x7f]', r'', s)
-
-
-# record history of training
-class LossHistory(keras.callbacks.Callback):
-    def on_train_begin(self, logs={}):
-        self.losses = []
-        self.accuracies = []
-
-    def on_batch_end(self, batch, logs={}):
-        self.losses.append(logs.get('loss'))
-        self.accuracies.append(logs.get('acc'))
-
+from insults.nn_model.util import binarize, binarize_outshape, striphtml, clean
+from insults.nn_model.util import LossHistory
 
 total = len(sys.argv)
 cmdargs = str(sys.argv)
@@ -111,7 +85,7 @@ pool_length = 2
 document = Input(shape=(max_sentences, maxlen), dtype='int64')
 # sentence input
 in_sentence = Input(shape=(maxlen,), dtype='int64')
-# char indices to one hot matrix, 1D sequence to 2D 
+# char indices to one hot matrix, 1D sequence to 2D
 embedded = Lambda(binarize, output_shape=binarize_outshape)(in_sentence)
 # embedded: encodes sentence
 for i in range(len(nb_filter)):
@@ -135,7 +109,7 @@ encoder = Model(inputs=in_sentence, outputs=sent_encode)
 encoder.summary()
 
 encoded = TimeDistributed(encoder)(document)
-# encoded: sentences to bi-lstm for document encoding 
+# encoded: sentences to bi-lstm for document encoding
 b_lstm_doc = \
     Bidirectional(LSTM(128, return_sequences=False, dropout=0.15, recurrent_dropout=0.15, implementation=0))(encoded)
 

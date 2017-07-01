@@ -13,28 +13,16 @@ import keras.callbacks
 import sys
 import os
 
+from insults.nn_model.util import binarize, binarize_outshape, striphtml, clean
 
-def binarize(x, sz=71):
-    return tf.to_float(tf.one_hot(x, sz, on_value=1, off_value=0, axis=-1))
-
-
-def binarize_outshape(in_shape):
-    return in_shape[0], in_shape[1], 71
-
-
-def striphtml(s):
-    p = re.compile(r'<.*?>')
-    return p.sub('', s)
-
-
-def clean(s):
-    return re.sub(r'[^\x00-\x7f]', r'', s)
-
+MAXLEN = 512
+MAX_SENTENCES = 15
 
 total = len(sys.argv)
 cmdargs = str(sys.argv)
 
 print ("Script name: %s" % str(sys.argv[0]))
+
 checkpoint = None
 if len(sys.argv) == 2:
     if os.path.exists(str(sys.argv[1])):
@@ -67,17 +55,14 @@ indices_char = dict((i, c) for i, c in enumerate(chars))
 
 print('Sample doc{}'.format(docs[1200]))
 
-maxlen = 512
-max_sentences = 15
-
-X = np.ones((len(docs), max_sentences, maxlen), dtype=np.int64) * -1
+X = np.ones((len(docs), MAX_SENTENCES, MAXLEN), dtype=np.int64) * -1
 y = np.array(sentiments)
 
 for i, doc in enumerate(docs):
     for j, sentence in enumerate(doc):
-        if j < max_sentences:
-            for t, char in enumerate(sentence[-maxlen:]):
-                X[i, j, (maxlen - 1 - t)] = char_indices[char]
+        if j < MAX_SENTENCES:
+            for t, char in enumerate(sentence[-MAXLEN:]):
+                X[i, j, (MAXLEN - 1 - t)] = char_indices[char]
 
 print('Sample X:{}'.format(X[1200, 2]))
 print('y:{}'.format(y[1200]))
@@ -120,8 +105,8 @@ def char_block(in_layer, nb_filter=(64, 100), filter_length=(3, 3), subsample=(2
 max_features = len(chars) + 1
 char_embedding = 40
 
-document = Input(shape=(max_sentences, maxlen), dtype='int64')
-in_sentence = Input(shape=(maxlen,), dtype='int64')
+document = Input(shape=(MAX_SENTENCES, MAXLEN), dtype='int64')
+in_sentence = Input(shape=(MAXLEN,), dtype='int64')
 
 embedded = Lambda(binarize, output_shape=binarize_outshape)(in_sentence)
 
