@@ -23,7 +23,7 @@ logger = setup_logging(__name__)
 
 MAXLEN = 512
 MAX_SENTENCES = 15
-DATA_FILE = "labeledTrainData.tsv"
+DATA_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "labeledTrainData.tsv")
 
 total = len(sys.argv)
 cmdargs = str(sys.argv)
