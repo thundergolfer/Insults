@@ -2,13 +2,11 @@ from keras.models import Model
 from keras.layers import Dense, Input, Dropout, MaxPooling1D, Conv1D
 from keras.layers import LSTM, Lambda
 from keras.layers import TimeDistributed, Bidirectional
-from keras.layers.normalization import BatchNormalization
 import numpy as np
 import keras.callbacks
 import sys
 import os
 
-from insults.nn_model.util import binarize, binarize_outshape, striphtml, clean
 from insults.nn_model.util import setup_logging, LossHistory
 from insults.nn_model.plumbing import load_data, extract_documents_with_their_sentiments
 from insults.nn_model.plumbing import sentence_count_per_doc, charset, chars_to_indices_vec
