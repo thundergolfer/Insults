@@ -53,7 +53,11 @@ X, y = shuffle_dataset(X, y)
 X_train, X_test, y_train, y_test = dataset_split(X, y)
 
 
-def char_block(in_layer, nb_filter=(64, 100), filter_length=(3, 3), subsample=(2, 1), pool_length=(2, 2)):
+def char_block(in_layer,
+               nb_filter=(64, 100),
+               filter_length=(3, 3),
+               subsample=(2, 1),
+               pool_length=(2, 2)):
     block = in_layer
     for i in range(len(nb_filter)):
 
@@ -79,8 +83,14 @@ in_sentence = Input(shape=(MAXLEN,), dtype='int64')
 
 embedded = Lambda(binarize, output_shape=binarize_outshape)(in_sentence)
 
-block2 = char_block(embedded, (128, 256), filter_length=(5, 5), subsample=(1, 1), pool_length=(2, 2))
-block3 = char_block(embedded, (192, 320), filter_length=(7, 5), subsample=(1, 1), pool_length=(2, 2))
+block2 = char_block(
+            embedded, (128, 256), filter_length=(5, 5),
+            subsample=(1, 1), pool_length=(2, 2)
+         )
+block3 = char_block(
+            embedded, (192, 320), filter_length=(7, 5),
+            subsample=(1, 1), pool_length=(2, 2)
+         )
 
 sent_encode = concatenate([block2, block3], axis=-1)
 
@@ -91,8 +101,20 @@ encoded = TimeDistributed(encoder)(document)
 
 lstm_h = 92
 
-lstm_layer = LSTM(lstm_h, return_sequences=True, dropout=0.1, recurrent_dropout=0.1, implementation=0)(encoded)
-lstm_layer2 = LSTM(lstm_h, return_sequences=False, dropout=0.1, recurrent_dropout=0.1, implementation=0)(lstm_layer)
+lstm_layer = LSTM(
+                lstm_h,
+                return_sequences=True,
+                dropout=0.1,
+                recurrent_dropout=0.1,
+                implementation=0
+             )(encoded)
+lstm_layer2 = LSTM(
+                lstm_h,
+                return_sequences=False,
+                dropout=0.1,
+                recurrent_dropout=0.1,
+                implementation=0
+              )(lstm_layer)
 
 output = Dense(1, activation='sigmoid')(lstm_layer2)
 
@@ -104,14 +126,32 @@ if checkpoint:
     model.load_weights(checkpoint)
 
 file_name = os.path.basename(sys.argv[0]).split('.')[0]
+checkpoint_location = 'checkpoints/' + file_name + '.{epoch:02d}-{val_loss:.2f}.hdf5'
 
-check_cb = keras.callbacks.ModelCheckpoint('checkpoints/' + file_name + '.{epoch:02d}-{val_loss:.2f}.hdf5',
+check_cb = keras.callbacks.ModelCheckpoint(
+                                           checkpoint_location,
                                            monitor='val_loss',
-                                           verbose=0, save_best_only=True, mode='min')
+                                           verbose=0,
+                                           save_best_only=True,
+                                           mode='min'
+                                          )
 
-earlystop_cb = keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
+earlystop_cb = keras.callbacks.EarlyStopping(
+                                             monitor='val_loss',
+                                             patience=5,
+                                             verbose=0,
+                                             mode='auto'
+                                            )
 
 optimizer = 'rmsprop'
 model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
-model.fit(X_train, y_train, validation_data=(X_test, y_test), batch_size=10, epochs=30, shuffle=True, callbacks=[check_cb, earlystop_cb])
+model.fit(
+          X_train,
+          y_train,
+          validation_data=(X_test, y_test),
+          batch_size=10,
+          epochs=30,
+          shuffle=True,
+          callbacks=[check_cb, earlystop_cb]
+         )
