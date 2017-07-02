@@ -46,9 +46,9 @@ def chars_to_indices_vec(docs, char_indices, max_sent, max_len):
 
     for i, doc in enumerate(docs):
         for j, sentence in enumerate(doc):
-            if j < MAX_SENTENCES:
+            if j < max_sent:
                 for t, char in enumerate(sentence[-max_len:]):
-                    X[i, j, (MAXLEN - 1 - t)] = char_indices[char]
+                    X[i, j, (max_len - 1 - t)] = char_indices[char]
 
     return X
 
