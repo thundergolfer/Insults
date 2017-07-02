@@ -12,15 +12,18 @@ import sys
 import os
 
 from insults.nn_model.util import binarize, binarize_outshape, striphtml, clean
+from insults.nn_model.util import setup_logging
 from insults.nn_model.plumbing import sentence_count_per_doc, charset, chars_to_indices_vec
 from insults.nn_model.plumbing import shuffle_dataset, dataset_split
+
+logger = setup_logging(__name__)
 
 DATA_FILE = "labeledTrainData.tsv"
 
 total = len(sys.argv)
 cmdargs = str(sys.argv)
 
-print ("Script name: %s" % str(sys.argv[0]))
+logger.info("Script name: %s" % str(sys.argv[0]))
 
 data = load_data(DATA_FILE)
 
@@ -29,11 +32,11 @@ docs, sentiments = extract_documents_with_their_sentiments(data)
 num_sent = sentence_count_per_doc(docs)
 chars = charset(docs)
 
-print('total chars:', len(chars))
+logger.info('total chars:', len(chars))
 char_indices = dict((c, i) for i, c in enumerate(chars))
 indices_char = dict((i, c) for i, c in enumerate(chars))
 
-print('Sample doc{}'.format(docs[1200]))
+logger.info('Sample doc{}'.format(docs[1200]))
 
 maxlen = 512
 max_sentences = 15
@@ -41,8 +44,8 @@ max_sentences = 15
 X = chars_to_indices_vec(docs, char_indices, max_sentences, maxlen)
 y = np.array(sentiments)
 
-print('Sample chars in X:{}'.format(X[1200, 2]))
-print('y:{}'.format(y[1200]))
+logger.info('Sample chars in X:{}'.format(X[1200, 2]))
+logger.info('y:{}'.format(y[1200]))
 
 X, y = shuffle_dataset(X, y)
 X_train, X_test, y_train, y_test = dataset_split(X, y, train_end=20000, test_start=20000)
@@ -112,5 +115,5 @@ model.fit(X_train, y_train, validation_data=(X_test, y_test), batch_size=10,
           epochs=5, shuffle=True, callbacks=[earlystop_cb, check_cb, history])
 
 # just showing access to the history object
-print history.losses
-print history.accuracies
+logger.info(history.losses)
+logger.info(history.accuracies)
