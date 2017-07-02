@@ -1,19 +1,13 @@
-import pandas as pd
-
 from keras.models import Model
-from keras.layers import Dense, Input, Dropout, MaxPooling1D, Conv1D, GlobalMaxPool1D
-from keras.layers import LSTM, Lambda, Bidirectional, concatenate, BatchNormalization
+from keras.layers import Dense, Input, MaxPooling1D, Conv1D, GlobalMaxPool1D
+from keras.layers import LSTM, Lambda, concatenate
 from keras.layers import TimeDistributed
-from keras.optimizers import Adam
-import keras.backend as K
 import numpy as np
-import tensorflow as tf
-import re
 import keras.callbacks
 import sys
 import os
 
-from insults.nn_model.util import binarize, binarize_outshape, striphtml, clean
+from insults.nn_model.util import binarize, binarize_outshape
 from insults.nn_model.util import setup_logging
 from insults.nn_model.plumbing import load_data, extract_documents_with_their_sentiments
 from insults.nn_model.plumbing import sentence_count_per_doc, charset, chars_to_indices_vec
@@ -69,12 +63,9 @@ def char_block(in_layer, nb_filter=(64, 100), filter_length=(3, 3), subsample=(2
                        activation='tanh',
                        strides=subsample[i])(block)
 
-        # block = BatchNormalization()(block)
-        # block = Dropout(0.1)(block)
         if pool_length[i]:
             block = MaxPooling1D(pool_size=pool_length[i])(block)
 
-    # block = Lambda(max_1d, output_shape=(nb_filter[-1],))(block)
     block = GlobalMaxPool1D()(block)
     block = Dense(128, activation='relu')(block)
     return block
@@ -92,7 +83,6 @@ block2 = char_block(embedded, (128, 256), filter_length=(5, 5), subsample=(1, 1)
 block3 = char_block(embedded, (192, 320), filter_length=(7, 5), subsample=(1, 1), pool_length=(2, 2))
 
 sent_encode = concatenate([block2, block3], axis=-1)
-# sent_encode = Dropout(0.2)(sent_encode)
 
 encoder = Model(inputs=in_sentence, outputs=sent_encode)
 encoder.summary()
@@ -104,7 +94,6 @@ lstm_h = 92
 lstm_layer = LSTM(lstm_h, return_sequences=True, dropout=0.1, recurrent_dropout=0.1, implementation=0)(encoded)
 lstm_layer2 = LSTM(lstm_h, return_sequences=False, dropout=0.1, recurrent_dropout=0.1, implementation=0)(lstm_layer)
 
-# output = Dropout(0.2)(bi_lstm)
 output = Dense(1, activation='sigmoid')(lstm_layer2)
 
 model = Model(outputs=output, inputs=document)
