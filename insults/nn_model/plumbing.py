@@ -4,6 +4,7 @@ import re
 
 from insults.nn_model.util import binarize, binarize_outshape, striphtml, clean
 
+
 def load_data(data_fp,  delimiter="\t"):
     return pd.read_csv(data_fp, header=0, delimiter=delimiter, quoting=3)
 
