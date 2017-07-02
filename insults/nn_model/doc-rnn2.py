@@ -21,11 +21,6 @@ total = len(sys.argv)
 cmdargs = str(sys.argv)
 
 print ("Script name: %s" % str(sys.argv[0]))
-checkpoint = None
-if len(sys.argv) == 2:
-    if os.path.exists(str(sys.argv[1])):
-        print ("Checkpoint : %s" % str(sys.argv[1]))
-        checkpoint = str(sys.argv[1])
 
 data = load_data(DATA_FILE)
 
@@ -95,6 +90,12 @@ output = Dense(1, activation='sigmoid')(output)
 model = Model(inputs=document, outputs=output)
 
 model.summary()
+
+checkpoint = None
+if len(sys.argv) == 2:
+    if os.path.exists(str(sys.argv[1])):
+        print ("Checkpoint : %s" % str(sys.argv[1]))
+        checkpoint = str(sys.argv[1])
 
 if checkpoint:
     model.load_weights(checkpoint)
