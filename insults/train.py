@@ -6,7 +6,7 @@ import itertools
 import logging
 import argparse
 import sys
-from concurrent.futures import ThreadPoolExecutor,ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 import concurrent.futures
 
 from insults.util import (data_file,
