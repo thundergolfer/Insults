@@ -1,12 +1,9 @@
-import pandas as pd
 from keras.models import Model
 from keras.layers import Dense, Input, Dropout, MaxPooling1D, Conv1D
 from keras.layers import LSTM, Lambda
 from keras.layers import TimeDistributed, Bidirectional
 from keras.layers.normalization import BatchNormalization
 import numpy as np
-import tensorflow as tf
-import re
 import keras.callbacks
 import sys
 import os
@@ -72,8 +69,15 @@ for i in range(len(nb_filter)):
     embedded = Dropout(0.1)(embedded)
     embedded = MaxPooling1D(pool_size=pool_length)(embedded)
 
-bi_lstm_sent = \
-    Bidirectional(LSTM(128, return_sequences=False, dropout=0.15, recurrent_dropout=0.15, implementation=0))(embedded)
+bi_lstm_sent = Bidirectional(
+                             LSTM(
+                                  128,
+                                  return_sequences=False,
+                                  dropout=0.15,
+                                  recurrent_dropout=0.15,
+                                  implementation=0
+                                 )
+                            )(embedded)
 
 # sent_encode = merge([forward_sent, backward_sent], mode='concat', concat_axis=-1)
 sent_encode = Dropout(0.3)(bi_lstm_sent)
@@ -83,8 +87,14 @@ encoder.summary()
 
 encoded = TimeDistributed(encoder)(document)
 # encoded: sentences to bi-lstm for document encoding
-b_lstm_doc = \
-    Bidirectional(LSTM(128, return_sequences=False, dropout=0.15, recurrent_dropout=0.15, implementation=0))(encoded)
+b_lstm_doc = Bidirectional(
+                           LSTM(
+                                128,
+                                return_sequences=False,
+                                dropout=0.15,
+                                recurrent_dropout=0.15,
+                                implementation=0)
+                          )(encoded)
 
 output = Dropout(0.3)(b_lstm_doc)
 output = Dense(128, activation='relu')(output)
@@ -105,10 +115,18 @@ if checkpoint:
     model.load_weights(checkpoint)
 
 file_name = os.path.basename(sys.argv[0]).split('.')[0]
-check_cb = keras.callbacks.ModelCheckpoint('checkpoints/' + file_name + '.{epoch:02d}-{val_loss:.2f}.hdf5',
+checkpoint_location = 'checkpoints/' + file_name + '.{epoch:02d}-{val_loss:.2f}.hdf5'
+
+check_cb = keras.callbacks.ModelCheckpoint(checkpoint_location,
                                            monitor='val_loss',
                                            verbose=0, save_best_only=True, mode='min')
-earlystop_cb = keras.callbacks.EarlyStopping(monitor='val_loss', patience=7, verbose=1, mode='auto')
+
+earlystop_cb = keras.callbacks.EarlyStopping(
+                                             monitor='val_loss',
+                                             patience=7,
+                                             verbose=1,
+                                             mode='auto'
+                                            )
 history = LossHistory()
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
