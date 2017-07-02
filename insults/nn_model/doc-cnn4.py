@@ -14,9 +14,12 @@ import sys
 import os
 
 from insults.nn_model.util import binarize, binarize_outshape, striphtml, clean
+from insults.nn_model.util import setup_logging
 from insults.nn_model.plumbing import load_data, extract_documents_with_their_sentiments
 from insults.nn_model.plumbing import sentence_count_per_doc, charset, chars_to_indices_vec
 from insults.nn_model.plumbing import shuffle_dataset, dataset_split
+
+logger = setup_logging(__name__)
 
 MAXLEN = 512
 MAX_SENTENCES = 15
@@ -25,7 +28,7 @@ DATA_FILE = "labeledTrainData.tsv"
 total = len(sys.argv)
 cmdargs = str(sys.argv)
 
-print ("Script name: %s" % str(sys.argv[0]))
+logger.info("Script name: %s" % str(sys.argv[0]))
 
 checkpoint = None
 if len(sys.argv) == 2:
@@ -40,17 +43,17 @@ docs, sentiments = extract_documents_with_their_sentiments(data)
 num_sent = sentence_count_per_doc(docs)
 chars = charset(docs)
 
-print('total chars:', len(chars))
+logger.info('total chars:', len(chars))
 char_indices = dict((c, i) for i, c in enumerate(chars))
 indices_char = dict((i, c) for i, c in enumerate(chars))
 
-print('Sample doc{}'.format(docs[1200]))
+logger.info('Sample doc{}'.format(docs[1200]))
 
 X = chars_to_indices_vec(docs, char_indices, MAX_SENTENCES, MAXLEN)
 y = np.array(sentiments)
 
-print('Sample X:{}'.format(X[1200, 2]))
-print('y:{}'.format(y[1200]))
+logger.info('Sample X:{}'.format(X[1200, 2]))
+logger.info('y:{}'.format(y[1200]))
 
 X, y = shuffle_dataset(X, y)
 X_train, X_test, y_train, y_test = dataset_split(X, y)

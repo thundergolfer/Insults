@@ -5,10 +5,10 @@ import tensorflow as tf
 
 
 def setup_logging(module_name):
-logger = logging.getLogger(module_name)
-logger.setLevel(logging.INFO)
+    logger = logging.getLogger(module_name)
+    logger.setLevel(logging.INFO)
 
-return logger
+    return logger
 
 
 class LossHistory(keras.callbacks.Callback):
