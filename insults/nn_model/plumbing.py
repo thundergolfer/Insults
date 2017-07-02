@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import re
 
 from insults.nn_model.util import binarize, binarize_outshape, striphtml, clean
 

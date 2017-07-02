@@ -12,7 +12,10 @@ import sys
 import os
 
 from insults.nn_model.util import binarize, binarize_outshape, striphtml, clean
-from insults.nn_model.util import LossHistory
+from insults.nn_model.plumbing import sentence_count_per_doc, charset, chars_to_indices_vec
+from insults.nn_model.plumbing import shuffle_dataset, dataset_split
+
+DATA_FILE = "labeledTrainData.tsv"
 
 total = len(sys.argv)
 cmdargs = str(sys.argv)
@@ -24,25 +27,12 @@ if len(sys.argv) == 2:
         print ("Checkpoint : %s" % str(sys.argv[1]))
         checkpoint = str(sys.argv[1])
 
-data = pd.read_csv("labeledTrainData.tsv", header=0, delimiter="\t", quoting=3)
-txt = ''
-docs = []
-sentences = []
-sentiments = []
+data = load_data(DATA_FILE)
 
-for cont, sentiment in zip(data.review, data.sentiment):
-    sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s', clean(striphtml(cont)))
-    sentences = [sent.lower() for sent in sentences]
-    docs.append(sentences)
-    sentiments.append(sentiment)
+docs, sentiments = extract_documents_with_their_sentiments(data)
 
-num_sent = []
-for doc in docs:
-    num_sent.append(len(doc))
-    for s in doc:
-        txt += s
-
-chars = set(txt)
+num_sent = sentence_count_per_doc(docs)
+chars = charset(docs)
 
 print('total chars:', len(chars))
 char_indices = dict((c, i) for i, c in enumerate(chars))
@@ -53,30 +43,14 @@ print('Sample doc{}'.format(docs[1200]))
 maxlen = 512
 max_sentences = 15
 
-X = np.ones((len(docs), max_sentences, maxlen), dtype=np.int64) * -1
+X = chars_to_indices_vec(docs, char_indices, max_sentences, maxlen)
 y = np.array(sentiments)
-
-for i, doc in enumerate(docs):
-    for j, sentence in enumerate(doc):
-        if j < max_sentences:
-            for t, char in enumerate(sentence[-maxlen:]):
-                X[i, j, (maxlen - 1 - t)] = char_indices[char]
 
 print('Sample chars in X:{}'.format(X[1200, 2]))
 print('y:{}'.format(y[1200]))
 
-ids = np.arange(len(X))
-np.random.shuffle(ids)
-
-# shuffle
-X = X[ids]
-y = y[ids]
-
-X_train = X[:20000]
-X_test = X[20000:]
-
-y_train = y[:20000]
-y_test = y[20000:]
+X, y = shuffle_dataset(X, y)
+X_train, X_test, y_train, y_test = dataset_split(X, y, train_end=20000, test_start=20000)
 
 filter_length = [5, 3, 3]
 nb_filter = [196, 196, 256]
