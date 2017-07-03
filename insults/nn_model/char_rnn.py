@@ -7,7 +7,7 @@ import keras.callbacks
 import sys
 import os
 
-from insults.nn_model.util import setup_logging, LossHistory
+from insults.nn_model.util import setup_logging, LossHistory, binarize, binarize_outshape
 from insults.nn_model.plumbing import load_data, build_examples_with_their_targets
 from insults.nn_model.plumbing import sentence_count_per_doc, charset, chars_to_indices_vec
 from insults.nn_model.plumbing import shuffle_dataset, dataset_split
