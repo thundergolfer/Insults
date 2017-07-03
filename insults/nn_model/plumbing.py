@@ -14,15 +14,15 @@ def dataset_preprocess(dataset):
 
 
 def build_examples_with_their_targets(examples, targets):
-    docs, sentences, targets = [], [], []
+    docs, sentences, targets_ = [], [], []
 
     for cont, target in zip(examples, targets):
         sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s', clean(striphtml(cont)))
         sentences = [sent.lower() for sent in sentences]
         docs.append(sentences)
-        targets.append(target)
+        targets_.append(target)
 
-    return docs, targets
+    return docs, targets_
 
 
 def sentence_count_per_doc(docs):
