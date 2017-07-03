@@ -24,27 +24,25 @@ cmdargs = str(sys.argv)
 
 logger.info("Script name: %s" % str(sys.argv[0]))
 
-data = load_data(DATA_FILE)
 insults_data = load_insults_data(INSULTS_TRAIN_DATA_FILE, INSULTS_TEST_DATA_FILE)
 
-docs, sentiments = build_examples_with_their_targets(data.review, data.sentiment)
 comments, targets = build_examples_with_their_targets(insults_data.Comment, insults_data.Insult)
 comments = strip_quotes(comments)
 
-num_sent = sentence_count_per_doc(docs)
-chars = charset(docs)
+num_sent = sentence_count_per_doc(comments)
+chars = charset(comments)
 
 logger.info('total chars:', len(chars))
 char_indices = dict((c, i) for i, c in enumerate(chars))
 indices_char = dict((i, c) for i, c in enumerate(chars))
 
-logger.info('Sample doc{}'.format(docs[len(docs)//2]))
+logger.info('Sample comment {}'.format(comments[len(comments)//2]))
 
 maxlen = 512
 max_sentences = 15
 
-X = chars_to_indices_vec(docs, char_indices, max_sentences, maxlen)
-y = np.array(sentiments)
+X = chars_to_indices_vec(comments, char_indices, max_sentences, maxlen)
+y = np.array(targets)
 
 logger.info('Sample chars in X:{}'.format(X[1200, 2]))
 logger.info('y:{}'.format(y[1200]))
