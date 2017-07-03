@@ -15,7 +15,6 @@ from insults.nn_model.plumbing import shuffle_dataset, dataset_split, strip_quot
 
 logger = setup_logging(__name__)
 
-DATA_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "labeledTrainData.tsv")
 INSULTS_TRAIN_DATA_FILE = data_file('Inputs','train.csv')
 INSULTS_TEST_DATA_FILE = data_file('Inputs','test_with_solutions.csv')
 
