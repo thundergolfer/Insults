@@ -24,15 +24,15 @@ class LossHistory(keras.callbacks.Callback):
         self.accuracies.append(logs.get('acc'))
 
 
-def binarize(x, sz=71):
-    return tf.to_float(tf.one_hot(x, sz, axis=-1))
+def binarize(x, size=71):
+    return tf.to_float(tf.one_hot(x, size, axis=-1))
 
 
-def binarize_outshape(in_shape):
-    return in_shape[0], in_shape[1], 71
+def binarize_outshape(in_shape, size=71):
+    return in_shape[0], in_shape[1], size
 
 
-def striphtml(s):
+def strip_html(s):
     p = re.compile(r'<.*?>')
     return p.sub('', s)
 

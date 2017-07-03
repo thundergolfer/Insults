@@ -3,7 +3,7 @@ import numpy as np
 import re
 
 from insults.util import data_file
-from insults.nn_model.util import binarize, binarize_outshape, striphtml, clean
+from insults.nn_model.util import binarize, binarize_outshape, strip_html, clean
 
 
 def load_data(data_fp,  delimiter="\t"):
@@ -25,7 +25,7 @@ def build_examples_with_their_targets(examples, targets):
     docs, sentences, targets_ = [], [], []
 
     for cont, target in zip(examples, targets):
-        sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s', clean(striphtml(cont)))
+        sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s', clean(strip_html(cont)))
         sentences = [sent.lower() for sent in sentences]
         docs.append(sentences)
         targets_.append(target)

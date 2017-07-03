@@ -52,12 +52,16 @@ X_train, X_test, y_train, y_test = dataset_split(X, y, train_end=20000, test_sta
 filter_length = [5, 3, 3]
 nb_filter = [196, 196, 256]
 pool_length = 2
+
 # document input
 document = Input(shape=(max_sentences, maxlen), dtype='int64')
+
 # sentence input
 in_sentence = Input(shape=(maxlen,), dtype='int64')
+
 # char indices to one hot matrix, 1D sequence to 2D
 embedded = Lambda(binarize, output_shape=binarize_outshape)(in_sentence)
+
 # embedded: encodes sentence
 for i in range(len(nb_filter)):
     embedded = Conv1D(filters=nb_filter[i],
