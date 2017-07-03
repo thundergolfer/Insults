@@ -17,6 +17,7 @@ logger = setup_logging(__name__)
 
 INSULTS_TRAIN_DATA_FILE = data_file('Inputs','train.csv')
 INSULTS_TEST_DATA_FILE = data_file('Inputs','test_with_solutions.csv')
+THIS_FILE = os.path.basename(sys.argv[0]).split('.')[0]
 
 total = len(sys.argv)
 cmdargs = str(sys.argv)
@@ -119,8 +120,7 @@ if len(sys.argv) == 2:
 if checkpoint:
     model.load_weights(checkpoint)
 
-file_name = os.path.basename(sys.argv[0]).split('.')[0]
-checkpoint_location = 'checkpoints/' + file_name + '.{epoch:02d}-{val_loss:.2f}.hdf5'
+checkpoint_location = 'checkpoints/' + THIS_FILE + '.{epoch:02d}-{val_loss:.2f}.hdf5'
 
 check_cb = keras.callbacks.ModelCheckpoint(checkpoint_location,
                                            monitor='val_loss',
@@ -132,6 +132,7 @@ earlystop_cb = keras.callbacks.EarlyStopping(
                                              verbose=1,
                                              mode='auto'
                                             )
+
 history = LossHistory()
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
