@@ -25,7 +25,7 @@ class LossHistory(keras.callbacks.Callback):
 
 
 def binarize(x, sz=71):
-    return tf.to_float(tf.one_hot(x, sz, on_value=1, off_value=0, axis=-1))
+    return tf.to_float(tf.one_hot(x, sz, axis=-1))
 
 
 def binarize_outshape(in_shape):

@@ -80,13 +80,13 @@ bi_lstm_sent = Bidirectional(
                                  )
                             )(embedded)
 
-# sent_encode = merge([forward_sent, backward_sent], mode='concat', concat_axis=-1)
 sent_encode = Dropout(0.3)(bi_lstm_sent)
-# sentence encoder
-encoder = Model(inputs=in_sentence, outputs=sent_encode)
+
+encoder = Model(inputs=in_sentence, outputs=sent_encode)  # sentence encoder
 encoder.summary()
 
 encoded = TimeDistributed(encoder)(document)
+
 # encoded: sentences to bi-lstm for document encoding
 b_lstm_doc = Bidirectional(
                            LSTM(
