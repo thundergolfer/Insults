@@ -32,7 +32,7 @@ logger.info('total chars:', len(chars))
 char_indices = dict((c, i) for i, c in enumerate(chars))
 indices_char = dict((i, c) for i, c in enumerate(chars))
 
-logger.info('Sample doc{}'.format(docs[1200]))
+logger.info('Sample doc{}'.format(docs[len(docs)//2]))
 
 maxlen = 512
 max_sentences = 15
