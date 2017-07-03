@@ -79,7 +79,6 @@ def tune_one_fold(options, i, train_i, test_i):
     return pandas.DataFrame({ ('auc%d' % i):ys}, index=xs)
 
 
-
 NFOLDS=15
 
 def initialize(arguments):
