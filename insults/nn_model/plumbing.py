@@ -68,6 +68,11 @@ def shuffle_dataset(X, y):
 
     return X[ids], y[ids]
 
+def strip_quotes(comments):
+    for c in comments:
+        c[0] = c[0][1:-1]
+
+    return comments
 
 def dataset_split(X, y, train_end=20000, test_start=22500):
     X_train = X[:train_end]

@@ -7,10 +7,11 @@ import keras.callbacks
 import sys
 import os
 
+from insults.util import data_file
 from insults.nn_model.util import setup_logging, LossHistory, binarize, binarize_outshape
 from insults.nn_model.plumbing import load_data, load_insults_data, build_examples_with_their_targets
 from insults.nn_model.plumbing import sentence_count_per_doc, charset, chars_to_indices_vec
-from insults.nn_model.plumbing import shuffle_dataset, dataset_split
+from insults.nn_model.plumbing import shuffle_dataset, dataset_split, strip_quotes
 
 logger = setup_logging(__name__)
 
@@ -27,6 +28,8 @@ data = load_data(DATA_FILE)
 insults_data = load_insults_data(INSULTS_TRAIN_DATA_FILE, INSULTS_TEST_DATA_FILE)
 
 docs, sentiments = build_examples_with_their_targets(data.review, data.sentiment)
+comments, targets = build_examples_with_their_targets(insults_data.Comment, insults_data.Insult)
+comments = strip_quotes(comments)
 
 num_sent = sentence_count_per_doc(docs)
 chars = charset(docs)
