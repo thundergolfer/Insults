@@ -8,13 +8,15 @@ import sys
 import os
 
 from insults.nn_model.util import setup_logging, LossHistory, binarize, binarize_outshape
-from insults.nn_model.plumbing import load_data, build_examples_with_their_targets
+from insults.nn_model.plumbing import load_data, load_insults_data, build_examples_with_their_targets
 from insults.nn_model.plumbing import sentence_count_per_doc, charset, chars_to_indices_vec
 from insults.nn_model.plumbing import shuffle_dataset, dataset_split
 
 logger = setup_logging(__name__)
 
 DATA_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "labeledTrainData.tsv")
+INSULTS_TRAIN_DATA_FILE = data_file('Inputs','train.csv')
+INSULTS_TEST_DATA_FILE = data_file('Inputs','test_with_solutions.csv')
 
 total = len(sys.argv)
 cmdargs = str(sys.argv)
@@ -22,6 +24,7 @@ cmdargs = str(sys.argv)
 logger.info("Script name: %s" % str(sys.argv[0]))
 
 data = load_data(DATA_FILE)
+insults_data = load_insults_data(INSULTS_TRAIN_DATA_FILE, INSULTS_TEST_DATA_FILE)
 
 docs, sentiments = build_examples_with_their_targets(data.review, data.sentiment)
 

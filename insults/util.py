@@ -21,23 +21,23 @@ def data_file(category, name=None):
     Create a filename within Data
     """
     if name == None:
-        return os.path.join(os.path.dirname(__file__), 'Data',category)
+        return os.path.join(os.path.dirname(__file__), 'Data', category)
     else:
-        return os.path.join(os.path.dirname(__file__), 'Data',category,name)
+        return os.path.join(os.path.dirname(__file__), 'Data', category, name)
 
 
 def data_directory(category):
     """
     Create a directory within Data
     """
-    return os.path.join(os.path.dirname(__file__), 'Data',category)
+    return os.path.join(os.path.dirname(__file__), 'Data', category)
 
 
 def log_file(name):
     """
     Create a log file.
     """
-    return os.path.join(os.path.dirname(__file__), 'Logs',name)
+    return os.path.join(os.path.dirname(__file__), 'Logs', name)
 
 
 def save_folds(folds):

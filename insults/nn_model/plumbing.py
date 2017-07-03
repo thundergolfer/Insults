@@ -2,11 +2,19 @@ import pandas as pd
 import numpy as np
 import re
 
+from insults.util import data_file
 from insults.nn_model.util import binarize, binarize_outshape, striphtml, clean
 
 
 def load_data(data_fp,  delimiter="\t"):
     return pd.read_csv(data_fp, header=0, delimiter=delimiter, quoting=3)
+
+def load_insults_data(train, test):
+    df1 = pd.read_table(data_file('Inputs','train.csv'), sep=',')
+    df2 = pd.read_table(data_file('Inputs','test_with_solutions.csv'), sep=',')
+    df = pd.concat([df1,df2])
+
+    return df
 
 
 def dataset_preprocess(dataset):
