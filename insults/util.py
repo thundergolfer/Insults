@@ -21,16 +21,16 @@ def data_file(category, name=None):
     Create a filename within Data
     """
     if name == None:
-        return os.path.join(os.path.dirname(__file__), 'Data', category)
+        return os.path.join(os.path.dirname(__file__), 'data', category)
     else:
-        return os.path.join(os.path.dirname(__file__), 'Data', category, name)
+        return os.path.join(os.path.dirname(__file__), 'data', category, name)
 
 
 def data_directory(category):
     """
     Create a directory within Data
     """
-    return os.path.join(os.path.dirname(__file__), 'Data', category)
+    return os.path.join(os.path.dirname(__file__), 'data', category)
 
 
 def log_file(name):
