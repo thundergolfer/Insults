@@ -29,6 +29,11 @@ from insults.pipeline import make_pipeline
 # labeled test file + model -> predictions -> score
 # unlabeled test file + model -> predictions
 
+
+
+NFOLDS=15
+
+
 def get_estimates():
     estimate_file = data_file('Estimates','estimates.csv')
     if os.path.exists(estimate_file):
@@ -36,6 +41,7 @@ def get_estimates():
         return zip(v.submission, v.estimate)
     else:
         return []
+
 
 def save_estimates(se):
     estimate_file = data_file('Estimates', 'estimates.csv')
@@ -79,21 +85,21 @@ def tune_one_fold(options, i, train_i, test_i):
     return pandas.DataFrame({ ('auc%d' % i):ys}, index=xs)
 
 
-NFOLDS=15
-
 def initialize(arguments):
     """
     Set up the training and test data.
     """
     train = pandas.read_table(arguments.trainfile,sep=',')
-    leaderboard = pandas.read_table(arguments.testfile,sep=',')
-    return train,leaderboard
+    test_examples = pandas.read_table(arguments.testfile,sep=',')
+    return train, test_examples
+
 
 def join_frames(dfs):
     df = dfs[0]
     for df2 in dfs[1:]:
         df = df.join(df2)
     return df
+
 
 def tuning(arguments):
     """
@@ -148,9 +154,9 @@ def predict(folds, arguments):
     clf.steps[-1][-1].max_iter,estimated_score = choose_n_iterations(folds)
     clf.steps[-1][-1].reset_args()
     clf.fit(train.Comment, train.Insult) # train the classifier
-    ypred = clf.predict(leaderboard.Comment) # use the trained classifier to classify comments
+    ypred = clf.predict(test_examples.Comment) # use the trained classifier to classify comments
 
-    submission = pandas.DataFrame(dict(Insult=ypred, Comment=leaderboard.Comment, Date=leaderboard.Date), columns=('Insult', 'Date', 'Comment'))
+    submission = pandas.DataFrame(dict(Insult=ypred, Comment=test_examples.Comment, Date=test_examples.Date), columns=('Insult', 'Date', 'Comment'))
 
     if arguments.predictions == None:
         estimates = get_estimates()
@@ -178,7 +184,7 @@ def run_prediction(parser=None,args_in=None,competition=False):
     ones pre-packaged for the script.
     """
     global train
-    global leaderboard
+    global test_examples
 
     if competition:
         logging.info('Running prepackaged arguments (%r)' % args_in)
@@ -187,7 +193,7 @@ def run_prediction(parser=None,args_in=None,competition=False):
         logging.info('Using arguments from command line %r' % args_in)
         arguments = args_in
 
-    train,leaderboard = initialize(arguments)
+    train,test_examples = initialize(arguments)
     if arguments.tune:
         folds = tuning(arguments)
         save_folds(folds)
