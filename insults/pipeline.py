@@ -17,6 +17,7 @@ class InsultsPipeline(pipeline.Pipeline):
             Xt = transform.transform(Xt)
         return self.steps[-1][-1].staged_auc(Xt, y)
 
+
 def make_pipeline(options):
     return InsultsPipeline([
                     ('vect', feature_extraction.text.CountVectorizer(
