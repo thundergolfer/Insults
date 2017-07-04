@@ -40,8 +40,8 @@ class Insults(object):
         Train the supervised classifier to prepare the Insults library for use.
         """
         parser = get_parser() # TODO
-        for argset in argsets['competition']:
-            run_prediction(parser=parser,args_in=argset,competition=True)
+        for argset in argsets['production']:
+            run_prediction(parser=parser, args_in=argset, production=True)
 
     @classmethod
     def rate_comment(cls, comment, binary=False):

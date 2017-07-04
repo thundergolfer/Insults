@@ -178,7 +178,7 @@ def predict(folds, arguments):
     logging.info("Finished predictions")
 
 
-def run_prediction(parser=None,args_in=None,competition=False):
+def run_prediction(parser=None, args_in=None, production=False):
     """
     Either pick up the arguments from the command line or use the
     ones pre-packaged for the script.
@@ -186,7 +186,7 @@ def run_prediction(parser=None,args_in=None,competition=False):
     global train
     global test_examples
 
-    if competition:
+    if production:
         logging.info('Running prepackaged arguments (%r)' % args_in)
         arguments = parser.parse_args(args_in)
     else:
@@ -205,25 +205,25 @@ def run_prediction(parser=None,args_in=None,competition=False):
 
 
 if __name__ == "__main__":
-    competition_argsets = argsets['competition']
+    production_argsets = argsets['production']
     tuning_argsets = argsets['tuning']
 
     parser = get_parser()
     arguments = parser.parse_args()
 
-    if arguments.competition:
+    if arguments.production:
         # Need to create directory
         log_dir = "Logs"
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
 
         logging.basicConfig(filename=log_file('final.log'),mode='w',format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-        for argset in competition_argsets:
-            run_prediction(parser=parser,args_in=argset,competition=True)
+        for argset in production_argsets:
+            run_prediction(parser=parser,args_in=argset,production=True)
     elif arguments.comptune:
         logging.basicConfig(filename=arguments.logfile,mode='w',format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
         for argset in tuning_argsets:
-            run_prediction(parser=parser,args_in=argset,competition=True)
+            run_prediction(parser=parser,args_in=argset,production=True)
     else:
         logging.basicConfig(filename=arguments.logfile,mode='w',format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-        run_prediction(parser=parser,args_in=args,competition=False)
+        run_prediction(parser=parser,args_in=args,production=False)
