@@ -27,7 +27,7 @@ def make_pipeline(options):
                                                                     )
                     ),
                     ('tfidf', feature_extraction.text.TfidfTransformer(sublinear_tf=True, norm='l2')),
-                    ("clf",InsultsSGDRegressor(alpha=options.sgd_alpha,
+                    ('clf', InsultsSGDRegressor(alpha=options.sgd_alpha,
                                                penalty=options.sgd_penalty,
                                                learning_rate='constant',
                                                eta0=options.sgd_eta0,
