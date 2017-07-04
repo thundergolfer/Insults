@@ -37,7 +37,7 @@ def log_file(name):
     """
     Create a log file.
     """
-    return os.path.join(os.path.dirname(__file__), 'Logs', name)
+    return os.path.join(os.path.dirname(__file__), 'logs', name)
 
 
 def save_folds(folds):

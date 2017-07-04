@@ -213,7 +213,7 @@ if __name__ == "__main__":
 
     if arguments.production:
         # Need to create directory
-        log_dir = "Logs"
+        log_dir = "logs"
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
 
