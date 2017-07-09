@@ -24,7 +24,7 @@ import numpy as np
 
 from insults.util import data_file
 import matplotlib.pyplot as plt
-from sklearn import linear_model
+from sklearn import linear_model, metrics
 
 
 
@@ -92,11 +92,12 @@ x_min, x_max = X[:, 0].min() - .5, X[:, 0].max() + .5
 y_min, y_max = X[:, 1].min() - .5, X[:, 1].max() + .5
 xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
 
+# This creates the predictions for the decisioncolorgrid
 Z = logreg.predict(np.c_[xx.ravel(), yy.ravel()])
 
 # Put the result into a color plot
 Z = Z.reshape(xx.shape)
-plt.figure(1, figsize=(6, 5))
+plt.figure(1, figsize=(12, 10))
 plt.pcolormesh(xx, yy, Z, cmap=plt.cm.Paired)
 
 # Plot also the training points
@@ -110,6 +111,20 @@ plt.xticks(())
 plt.yticks(())
 
 plt.show()
+
+
+
+y_pred = logreg.predict(X)
+prec = metrics.precision_score(Y, y_pred)
+prec
+
+
+# ### Question I left off with 
+# 
+# why is the meshgrid so sparse?
+
+
+
 
 
 
