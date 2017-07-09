@@ -53,4 +53,6 @@ or alternatively you can run single commands in the environment with:
 
 ### Credit
 
+* [Character-level Convolutional Networks for Text
+Classification](https://arxiv.org/pdf/1509.01626.pdf), with simple implementation by [mhjabreel](https://github.com/mhjabreel/) over [here](https://github.com/mhjabreel/CharCnn_Keras/blob/master/char_cnn.py)
 * [cbrew](https://github.com/cbrew) for their original data-science work in [Imperium's Kaggle Competition](https://www.kaggle.com/c/detecting-insults-in-social-commentary). Code in [cbrew/Insults](https://github.com/cbrew/Insults)

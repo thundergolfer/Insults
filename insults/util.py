@@ -54,7 +54,7 @@ def saved_folds():
     return pandas.read_table(data_file('folds.csv'), sep=',', index_col='iterations')
 
 
-SAVEFILE_LOCATION = "models/"
+SAVEFILE_LOCATION = "models/stored/"
 MODEL_FILENAME = "insult_classifier.joblib.pkl"
 
 def save_model( clf, location=SAVEFILE_LOCATION ):

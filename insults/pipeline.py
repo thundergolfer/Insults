@@ -19,19 +19,15 @@ class InsultsPipeline(pipeline.Pipeline):
 
 
 def make_pipeline(options):
-    return InsultsPipeline([
-                    ('vect', feature_extraction.text.CountVectorizer(
-                                                                     lowercase=False,
-                                                                     analyzer='char',
-                                                                     ngram_range=(1, 5)
-                                                                    )
-                    ),
-                    ('tfidf', feature_extraction.text.TfidfTransformer(sublinear_tf=True, norm='l2')),
-                    ("clf",InsultsSGDRegressor(alpha=options.sgd_alpha,
-                                               penalty=options.sgd_penalty,
-                                               learning_rate='constant',
-                                               eta0=options.sgd_eta0,
-                                               max_iter=options.sgd_max_iter,
-                                               n_iter_per_step=options.sgd_n_iter_per_step)
-                    )
-                ])
+    vect = ('vect', feature_extraction.text.CountVectorizer(lowercase=False,
+                                                            analyzer='char',
+                                                            ngram_range=(1, 5)))
+    tfidf = ('tfidf', feature_extraction.text.TfidfTransformer(sublinear_tf=True, norm='l2'))
+    clf = ("clf",InsultsSGDRegressor(alpha=options.sgd_alpha,
+                                     penalty=options.sgd_penalty,
+                                     learning_rate='constant',
+                                     eta0=options.sgd_eta0,
+                                     max_iter=options.sgd_max_iter,
+                                     n_iter_per_step=options.sgd_n_iter_per_step))
+
+    return InsultsPipeline([vect, tfidf, clf])
