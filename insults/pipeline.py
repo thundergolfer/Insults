@@ -23,7 +23,7 @@ def make_pipeline(options):
                     ('vect', feature_extraction.text.CountVectorizer(
                                                                      lowercase=False,
                                                                      analyzer='char',
-                                                                     ngram_range=(1,5)
+                                                                     ngram_range=(1, 5)
                                                                     )
                     ),
                     ('tfidf', feature_extraction.text.TfidfTransformer(sublinear_tf=True, norm='l2')),

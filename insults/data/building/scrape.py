@@ -1,5 +1,6 @@
 import praw
 
+
 def scrape_defaults():
     for subreddit in r.subreddits.default(limit=None):
         submissions = subreddit.hot(limit=15)
@@ -15,7 +16,7 @@ def scrape_defaults():
                 print comment.body
                 print "score: " + str(comment.score)
                 print "#" * 10
-                
+
             print "\n" * 1
 
 
