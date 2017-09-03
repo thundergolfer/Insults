@@ -33,7 +33,7 @@ Note: It is important that the comment must be insulting another participant in 
 * President Mugabe is an absolute idiot
 * The FCC are a bunch of dickheads
 
-While these comments are insulting, they are not directed at someone else in the conversation, but distant third-parties or non-persons. 
+While these comments are insulting, they are not directed at someone else in the conversation, but distant third-parties or non-persons.
 
 ### Selection Criteria
 
@@ -45,3 +45,14 @@ While these comments are insulting, they are not directed at someone else in the
 
 
 ###### Criteria for: NOT Insult
+
+
+
+------
+
+Command to pass aws credentials to `boto3` and query MTurk account balance
+
+
+```
+AWS_ACCESS_KEY_ID=$(aws --profile personal configure get aws_access_key_id) AWS_SECRET_ACCESS_KEY=$(aws --profile personal configure get aws_secret_access_key) python insults/data/building/mechanical_turk/blah.py
+```
