@@ -39,13 +39,17 @@ While these comments are insulting, they are not directed at someone else in the
 
 > Workers do best if you provide selection criteria on your categories. Specify what to include and/or exclude for those categories that might be ambiguous to Workers.
 
-###### Criteria for: Insult
+##### Criteria for: Insult
+###### Includes
+- Sexism, racism, directed AT ANOTHER participant
+- Swearing at another user, eg. "Fuck off dude", "fuck you", "get outta here bitch"
 
+###### Excludes
+- Fair criticism
+- Insulting third-parties not in conversation
+- Any other kind of comment that has nothing to do with other participants
 
-
-
-###### Criteria for: NOT Insult
-
+##### Criteria for: NOT Insult
 
 
 ------
