@@ -2,6 +2,8 @@
 
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+python $script_dir/sync_with_simpleamt.py
+
 cd $script_dir/simple-amt
 
 TEMPLATE_NAME=hit_templates/task_template.html
