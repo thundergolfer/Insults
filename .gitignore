@@ -2,6 +2,9 @@
 install_numbats.sh
 script/app_installer.sh
 
+# `simple-amt` AWS credentials config file
+*/*/config.json
+
 *.pkl
 
 # Byte-compiled / optimized / DLL files
