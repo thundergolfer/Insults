@@ -14,16 +14,16 @@ NUM_COMMENTS_TO_GRAB_PER_SUBMISSION = 10
 
 def reservoir_sample(comments, N):
     """
-    SOURCE: http://data-analytics-tools.blogspot.com.au/2009/09/reservoir-sampling-algorithm-in-perl.html
+    SOURCE: data-analytics-tools.blogspot.com.au/2009/09/reservoir-sampling-algorithm-in-perl.html
     Take N elements randomly from a comment list of unknown size.
     """
-    sample = [];
+    sample = []
 
     for i, comment in enumerate(comments):
         if i < N:
             sample.append(comment)
         elif (i >= N) and (random.random() < (N / float(i+1))):
-            replace = random.randint(0,len(sample)-1)
+            replace = random.randint(0, len(sample)-1)
             sample[replace] = comment
 
     for elem in sample:
@@ -34,16 +34,16 @@ def get_parents_of_reddit_comment(comment):
     previous_comment = comment.parent()
     if type(previous_comment) is praw.models.Submission:
         previous_comment = None
-        previous_previous_comment = None
+        prev_prev_comment = None
     else:
-        previous_previous_comment = previous_comment.parent()
-        if type(previous_previous_comment) is praw.models.Submission:
-            previous_previous_comment = None
+        prev_prev_comment = previous_comment.parent()
+        if type(prev_prev_comment) is praw.models.Submission:
+            prev_prev_comment = None
 
     previous_comment = previous_comment.body if previous_comment else None
-    previous_previous_comment = previous_previous_comment.body if previous_previous_comment else None
+    prev_prev_comment = prev_prev_comment.body if prev_prev_comment else None
 
-    return previous_comment, previous_previous_comment
+    return previous_comment, prev_prev_comment
 
 
 def scrape_reddit_defaults():

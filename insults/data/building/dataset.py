@@ -98,7 +98,7 @@ class DatasetEntry():
         return dt.strftime("%Y%m%d%H%M%SZ")
 
     def _validate_source(self, source):
-        if not source in set(['reddit']):
+        if source not in set(['reddit']):
             raise ValueError("{} is not a valid dataset source".format(source))
 
         return source
@@ -134,7 +134,7 @@ class DatasetEntry():
         if difficulty is None:
             return ""
 
-        if not difficulty in self.DIFFICULTY:
-            raise ValueError("'{}' is not a valid difficult for an entry. Must be one of {}".format(difficulty,
-                                                                                                    self.DIFFICULTY))
+        if difficulty not in self.DIFFICULTY:
+            raise ValueError("'{}' is not a valid difficulty. Can be {}".format(difficulty,
+                                                                                self.DIFFICULTY))
         return difficulty

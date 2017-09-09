@@ -4,6 +4,7 @@ import shutil
 
 PATH_TO_HERE = os.path.dirname(os.path.abspath(__file__))
 
+
 def copytree(src, dst, symlinks=False, ignore=None):
     if not os.path.exists(dst):
         os.makedirs(dst)
@@ -15,6 +16,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
         else:
             if not os.path.exists(d) or os.stat(s).st_mtime - os.stat(d).st_mtime > 1:
                 shutil.copy2(s, d)
+
 
 if __name__ == '__main__':
     copytree(os.path.join(PATH_TO_HERE, 'hit_templates'),

@@ -8,7 +8,9 @@ from insults.data.building.dataset import csv_entry_to_dict, default_dataset_hea
 
 
 PATH_TO_HERE = os.path.dirname(os.path.abspath(__file__))
-OUTFILE = os.path.join(PATH_TO_HERE, 'hit_inputs', "inputs_{}.txt".format(time.strftime("%Y%m%d_%H%M%S")))
+OUTFILE = os.path.join(PATH_TO_HERE,
+                       'hit_inputs',
+                       "inputs_{}.txt".format(time.strftime("%Y%m%d_%H%M%S")))
 DATASET_PATH = os.path.join(PATH_TO_HERE, '..', 'new_dataset.csv')
 
 inputs = []
