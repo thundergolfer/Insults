@@ -1,0 +1,5 @@
+{
+  "min_comment_length": 3,
+  "max_comment_length": 700,
+  "allowed_languages": ["en"]
+}

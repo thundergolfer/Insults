@@ -1,0 +1,142 @@
+<html>
+  <head>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js'></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <section class="container" id="Other" style="margin-bottom:15px; padding: 10px 10px; font-family: Verdana, Geneva, sans-serif; color:#333333; font-size:0.9em;">
+      <div class="row col-xs-12 col-md-12"><!-- Instructions -->
+        <div class="panel panel-primary">
+          <div class="panel-heading"><strong>Instructions</strong></div>
+
+          <div class="panel-body">
+            <p>The challenge is to detect when a comment from a conversation would be considered insulting to another participant in the conversation. Samples could be drawn from conversation streams like news commenting sites, magazine comments, message boards, blogs, text messages, etc.</p>
+
+            <p>The idea is to create a generalizable single-class classifier which could operate in a near real-time mode, scrubbing the filth of the internet away in one pass.</p>
+
+            <p><strong>Note:</strong> It is important that <em>the comment must be insulting another participant in the conversation</em>. For our purposes, the following are not to be classified as insults:</p>
+
+            <ul>
+            	<li>President Mugabe is an absolute idiot</li>
+            	<li>The FCC are a bunch of dickheads</li>
+            </ul>
+
+            <p>While these comments are insulting, they are not directed at someone else in the conversation, but distant third-parties or non-persons.</p>
+          </div>
+        </div>
+        <!-- End Instructions --><!-- Content Body -->
+
+        <section>
+          <h4>Is the following comment an insult?:</h4>
+
+          <fieldset>
+            <label id='the_comment'></label>
+          </fieldset>
+        </section>
+
+        <section>
+          <h4>For context, here&#39;s the grandparent and parent comments of the target comment. (may be blank)</h4>
+
+          <h5><em>Grandparent</em></h5>
+
+          <p id='grandparent_comment'></p>
+
+          <h5><em>Parent Comment</em></h5>
+
+          <p id='parent_comment'></p>
+        </section>
+
+        <fieldset>
+          <section>
+            <fieldset>
+              <label><label>Select only ONE of the following:</label></label>
+
+              <div class="radio"><label><label><input disabled name="Q1Answer" id="insult_yes" type="radio" value="insult" />insult</label></label></div>
+              <label> </label>
+
+              <div class="radio"><label><label><input disabled name="Q1Answer" id="insult_no" type="radio" value="NOT insult" /><strong>NOT</strong> insult</label></label></div>
+              <label> </label>
+            </fieldset>
+          </section>
+          <label><!-- End Content Body --></label>
+        </fieldset>
+      </div>
+    </section>
+    <!-- close container -->
+    <style type="text/css">fieldset { padding: 10px; background:#fbfbfb; border-radius:5px; margin-bottom:5px; }</style>
+
+    {% include "hit_templates/simpleamt.html" %}
+
+    <script>
+      $(function() {
+        // Define default input to be used when developing this HIT.
+        var DEFAULT_INPUT = { comment: 'dog', parent_comment: 'cat cat', grandparent_comment: 'horse horse horse' };
+
+        function main() {
+          // Read input to the HIT. In development the default input will be
+          // used, and in deployment actual input will be used.
+          var input = simpleamt.getInput(DEFAULT_INPUT);
+
+          // Use the input to set up the UI.
+          $('#the_comment').text(input.comment);
+          $('#parent_comment').text(input.parent_comment);
+          $('#grandparent_comment').text(input.grandparent_comment);
+
+          // If the HIT is not in preview mode, then we need to enable the UI
+          // and set up the logic for submitting.
+          if (!simpleamt.isPreview()) {
+            enable_ui();
+
+            // You need to call this in every HIT; if you forget then you will
+            // get an error message when you try and submit the HIT.
+            simpleamt.setupSubmit();
+
+            // Set up a click handler for the submit button.
+            // Typically this will validate user output and either submit the
+            // HIT if the data is good or show an error message to the user if
+            // the data is bad. If this click handler returns false then the
+            // HIT will not be submitted.
+            // WARNING: If the click handler throws an exception
+            // then by default the HIT will be submitted; this is a fertile
+            // source of bugs.
+            $('#submit-btn').click(function() {
+              // Construct an object containing the output of this assignment.
+              var output = {
+                comment: input.comment,
+                example: null,
+              };
+
+              if(document.getElementById('insult_yes').checked) {
+                //Male radio button is checked
+                output.example = true
+              }else if(document.getElementById('insult_no').checked) {
+                //Female radio button is checked
+                output.example = false
+              }
+
+              // Validate the output
+              if (output.example == null) {
+                alert('Must select an answer');
+                return false;
+              } else {
+                simpleamt.setOutput(output);
+              }
+            })
+          }
+        }
+
+        function enable_ui() {
+          // Enable the UI specific to our HIT.
+          $('#insult_yes').prop('disabled', false);
+          $('#insult_no').prop('disabled', false);
+
+          // Enable the submit button. You must do this in every HIT.
+          $('#submit-btn').prop('disabled', false);
+        }
+
+        main();
+      });
+    </script>
+  </body>
+</html>

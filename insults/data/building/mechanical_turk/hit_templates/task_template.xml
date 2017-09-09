@@ -1,0 +1,58 @@
+<!-- Bootstrap v3.0.3 -->
+<link href="https://s3.amazonaws.com/mturk-public/bs30/css/bootstrap.min.css" rel="stylesheet" />
+<section class="container" id="Other" style="margin-bottom:15px; padding: 10px 10px; font-family: Verdana, Geneva, sans-serif; color:#333333; font-size:0.9em;">
+<div class="row col-xs-12 col-md-12"><!-- Instructions -->
+<div class="panel panel-primary">
+<div class="panel-heading"><strong>Instructions</strong></div>
+
+<div class="panel-body">
+<p>The challenge is to detect when a comment from a conversation would be considered insulting to another participant in the conversation. Samples could be drawn from conversation streams like news commenting sites, magazine comments, message boards, blogs, text messages, etc.</p>
+
+<p>The idea is to create a generalizable single-class classifier which could operate in a near real-time mode, scrubbing the filth of the internet away in one pass.</p>
+
+<p><strong>Note:</strong> It is important that <em>the comment must be insulting another participant in the conversation</em>. For our purposes, the following are not to be classified as insults:</p>
+
+<ul>
+	<li>President Mugabe is an absolute idiot</li>
+	<li>The FCC are a bunch of dickheads</li>
+</ul>
+
+<p>While these comments are insulting, they are not directed at someone else in the conversation, but distant third-parties or non-persons.</p>
+</div>
+</div>
+<!-- End Instructions --><!-- Content Body -->
+
+<section>
+<h4>Is the following comment an insult?:</h4>
+
+<fieldset><label>${comment}</label></fieldset>
+</section>
+
+<section>
+<h4>For context, here&#39;s the grandparent and parent comments of the target comment. (may be blank)</h4>
+
+<h5>Grandparent</h5>
+
+<p>${grandparent_comment}</p>
+
+<h5>Parent Comment</h5>
+
+<p>${parent_comment}</p>
+</section>
+
+<fieldset>
+<section>
+<fieldset><label><label>Select only ONE of the following:</label> </label>
+
+<div class="radio"><label><label><input name="Q1Answer" type="radio" value="insult" />insult</label></label></div>
+<label> </label>
+
+<div class="radio"><label><label><input name="Q1Answer" type="radio" value="NOT insult" /><strong>NOT</strong> insult</label></label></div>
+<label> </label></fieldset>
+</section>
+<label><!-- End Content Body --></label></fieldset>
+</div>
+</section>
+<!-- close container -->
+<style type="text/css">fieldset { padding: 10px; background:#fbfbfb; border-radius:5px; margin-bottom:5px; }
+</style>
