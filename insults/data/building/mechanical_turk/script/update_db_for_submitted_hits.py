@@ -9,7 +9,7 @@ import sys
 PATH_TO_HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def link_inputs_with_hit_ids(inputs, submitted_ids):
+def link_inputs_with_hit_ids_and_update_dataset(inputs, submitted_ids):
     df = pd.read_csv(DATASET_FILE, index_col=False)
     df.set_index('Comment', inplace=True, drop=False)
 
@@ -38,4 +38,4 @@ with open(SUBMITTED_FILE, 'r') as f:
 
 
 if __name__ == '__main__':
-    link_inputs_with_hit_ids(inputs, submitted_ids)
+    link_inputs_with_hit_ids_and_update_dataset(inputs, submitted_ids)
