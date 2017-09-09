@@ -31,7 +31,6 @@ def csv_entry_to_dict(row, csv_header):
     return dict(zip(csv_header, row))
 
 
-
 class DatasetEntry():
     DEFAULT_DATASET = os.path.join(PATH_TO_HERE, 'new_dataset.csv')
     ALLOWED_LABLES = ['racist', 'sexist', 'sarcasm', 'ableist']
