@@ -4,6 +4,9 @@ script/app_installer.sh
 
 # `simple-amt` AWS credentials config file
 */*/config.json
+# `simple-amt` package
+*/*/simple-amt/
+insults/data/building/mechanical_turk/simple-amt/
 
 *.pkl
 
