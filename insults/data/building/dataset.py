@@ -22,8 +22,10 @@ def default_dataset_header():
         'Score',
         'Parent Comment',
         'Grandparent Comment',
+        'Status',
         'Labels',
-        'Difficulty'
+        'Difficulty',
+        'HIT ID'
     ]
 
 
@@ -34,6 +36,7 @@ def csv_entry_to_dict(row, csv_header):
 class DatasetEntry():
     DEFAULT_DATASET = os.path.join(PATH_TO_HERE, 'new_dataset.csv')
     ALLOWED_LABLES = ['racist', 'sexist', 'sarcasm', 'ableist']
+    ALLOWED_STATUS = ['READY', 'SUBMITTED', 'LABELLED']
     DIFFICULTY = ['easy', 'medium', 'hard', 'impossible']
 
     def __init__(self,
@@ -45,6 +48,7 @@ class DatasetEntry():
                  score,
                  parent_comment,
                  grandparent_comment,
+                 status,
                  labels=None,
                  difficulty=None):
         self.comment = self._validate_comment(comment)
@@ -58,6 +62,8 @@ class DatasetEntry():
         self.labels = self._validate_labels(labels)
         self.difficulty = self._validate_difficulty(difficulty)
         self.added_to = []
+        self.status = self._validate_status(status)
+        self.hit_id = ""
 
     def add_to_dataset(self, dataset_path=DEFAULT_DATASET):
         if dataset_path in self.added_to:
@@ -81,8 +87,10 @@ class DatasetEntry():
             str(self.score).encode('utf-8'),
             self.parent_comment.encode('utf-8'),
             self.grandparent_comment.encode('utf-8'),
+            self.status.encode('utf-8'),
             '+'.join(self.labels).encode('utf-8'),
-            self.difficulty.encode('utf-8')
+            self.difficulty.encode('utf-8'),
+            self.hit_id.encode('utf-8')
         ]
 
     def _validate_comment(self, comment):
@@ -138,3 +146,12 @@ class DatasetEntry():
             raise ValueError("'{}' is not a valid difficulty. Can be {}".format(difficulty,
                                                                                 self.DIFFICULTY))
         return difficulty
+
+    def _validate_status(self, status):
+        if status is None:
+            raise ValueError("Must specify an entry status")
+
+        if status not in self.ALLOWED_STATUS:
+            raise ValueError("'{}' is not a valid status. Can be {}".format(status,
+                                                                            self.ALLOWED_STATUS))
+        return status
