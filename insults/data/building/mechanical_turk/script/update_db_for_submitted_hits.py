@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import json
 import logging
 import pandas as pd
@@ -21,7 +22,7 @@ def link_inputs_with_hit_ids(inputs, submitted_ids):
     df.to_csv(DATASET_FILE, index=False)
 
 
-DATASET_FILE = os.path.join(PATH_TO_HERE, '..', sys.argv[1])
+DATASET_FILE = os.path.join(os.path.dirname(os.path.dirname(PATH_TO_HERE)), sys.argv[1])
 INPUTS_FILE = sys.argv[2]
 SUBMITTED_FILE = sys.argv[3]
 
