@@ -1,5 +1,4 @@
 import csv
-import json
 import logging
 import os
 import pandas as pd
@@ -13,6 +12,7 @@ PATH_TO_HERE = os.path.dirname(os.path.abspath(__file__))
 DATASET_PATH = os.path.join(PATH_TO_HERE, '..', 'new_dataset.csv')
 
 LIMIT = int(sys.argv[1])
+
 
 def gather_entries_to_label():
     inputs = []
@@ -46,13 +46,13 @@ def display_entry(entry):
     to another participant in the conversation. Samples could be drawn from conversation streams
     like news commenting sites, magazine comments, message boards, blogs, text messages, etc.
 
-    The idea is to create a generalizable single-class classifier which could operate in a near real-time mode,
-    scrubbing the filth of the internet away in one pass.
+    The idea is to create a generalizable single-class classifier which could operate in a near real-time
+    mode, scrubbing the filth of the internet away in one pass.
 
     ---------------------------------------------------------------------------------------------------
 
-    NOTE: It is important that the comment must be insulting another participant in the conversation.
-    For our purposes, the following are not to be classified as insults:
+    NOTE: It is important that the comment must be insulting another participant in the
+    conversation. For our purposes, the following are not to be classified as insults:
 
     * President Mugabe is an absolute idiot
     * The FCC are a bunch of dickheads
@@ -70,7 +70,6 @@ def display_entry(entry):
     print("*" * 20)
     print("COMMENT TO LABEL:\n{}\n".format(entry['comment']))
     print("*" * 20)
-
 
 
 def get_label(entry):

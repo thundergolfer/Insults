@@ -14,8 +14,8 @@ def link_inputs_with_hit_ids_and_update_dataset(inputs, submitted_ids):
     df.set_index('Comment', inplace=True, drop=False)
 
     for input_, id_ in zip(inputs, submitted_ids):
-        logging.info("Updating comment '{}'' with HIT ID {}".format(input_['comment'].encode('utf-8'),
-                                                                    id_.encode('utf-8')))
+        logging.info("Updating '{}'' w/ HIT ID {}".format(input_['comment'].encode('utf-8'),
+                                                          id_.encode('utf-8')))
         df.loc[input_['comment'], 'HIT ID'] = id_
         df.loc[input_['comment'], 'Status'] = "SUBMITTED"
 

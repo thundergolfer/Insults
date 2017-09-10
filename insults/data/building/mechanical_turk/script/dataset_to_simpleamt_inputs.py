@@ -4,7 +4,6 @@ import csv
 import json
 import os
 import sys
-import time
 
 
 from insults.data.building.dataset import csv_entry_to_dict, default_dataset_header
