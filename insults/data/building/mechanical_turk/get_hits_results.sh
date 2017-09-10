@@ -11,3 +11,5 @@ python get_results.py \
   --hit_ids_file=$HITS_IDS \
   --output_file=$OUTPUT_FILE \
   > $OUTPUT_FILE
+
+./$script_dir/script/update_dataset_from_simpleamt_results.py $OUTPUT_FILE

@@ -80,6 +80,7 @@ def scrape_reddit_defaults():
                     score=comment.score,
                     parent_comment=parent_comment,
                     grandparent_comment=grandparent_comment,
+                    status='READY',
                     labels=None,
                     difficulty=None
                 )
