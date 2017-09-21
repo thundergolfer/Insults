@@ -11,19 +11,17 @@ from insults.data.building.dataset import csv_entry_to_dict, default_dataset_hea
 PATH_TO_HERE = os.path.dirname(os.path.abspath(__file__))
 DATASET_PATH = os.path.join(PATH_TO_HERE, '..', 'new_dataset.csv')
 
-LIMIT = int(sys.argv[1])
 
-
-def gather_entries_to_label():
+def gather_entries_to_label(dataset_path, limit=50):
     inputs = []
     num_added = 0
-    with open(DATASET_PATH, 'rb') as csvfile:
+    with open(dataset_path, 'rb') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         next(reader, None)  # skip the header
 
         for row in reader:
-            if num_added == LIMIT:
-                print("Gathered {} examples".format(LIMIT))
+            if num_added == limit:
+                print("Gathered {} examples".format(limit))
                 break
 
             dataset_entry = csv_entry_to_dict(row, default_dataset_header())
@@ -104,20 +102,23 @@ def update_dataset(responses):
     df.to_csv(DATASET_PATH, index=False)
 
 
-print("Starting...")
-responses = []
-entries = gather_entries_to_label()
-if not entries:
-    print("Nothing available to label.. exiting")
+if __name__ == '__main__':
+    LIMIT = int(sys.argv[1])
 
-for entry in entries:
-    display_entry(entry)
-    responses.append(get_label(entry))
+    print("Starting...")
+    responses = []
+    entries = gather_entries_to_label(DATASET_PATH, LIMIT)
+    if not entries:
+        print("Nothing available to label.. exiting")
 
-print("-" * 20)
-print("Done with responses. Now will update dataset")
-print("-" * 20)
+    for entry in entries:
+        display_entry(entry)
+        responses.append(get_label(entry))
 
-update_dataset(responses)
+    print("-" * 20)
+    print("Done with responses. Now will update dataset")
+    print("-" * 20)
 
-print("Update finished. Thanks for your time")
+    update_dataset(responses)
+
+    print("Update finished. Thanks for your time")
