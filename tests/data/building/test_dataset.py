@@ -189,7 +189,32 @@ class TestDatasetEntry():
 
     def test__validate_labels(self):
         assert [] == self.entry._validate_labels(None)
+        assert ['racist', 'sexist', 'sarcasm', 'ableist'] == self.entry._validate_labels(['racist', 'sexist', 'sarcasm', 'ableist'])
 
     def test__validate_labels_on_invalid_input(self):
         with pytest.raises(ValueError):
             assert ['Hello', 'World'] == self.entry._validate_labels(['Hello', 'World'])
+
+    def test__validate_difficulty(self):
+        for diff in ['easy', 'medium', 'hard', 'impossible']:
+            assert diff == self.entry._validate_difficulty(diff)
+
+        assert "" == self.entry._validate_difficulty(None)
+
+    def test__validate_difficulty_on_invalid_input(self):
+        with pytest.raises(ValueError):
+            self.entry._validate_difficulty('hi')
+
+    def test__validate_status(self):
+        for status in ['READY', 'SUBMITTED', 'LABELLED']:
+            assert status == self.entry._validate_status(status)
+
+    def test__validate_status_on_invalid_input(self):
+        with pytest.raises(ValueError):
+            self.entry._validate_status(None)
+
+        with pytest.raises(ValueError):
+            self.entry._validate_status('DONE')
+
+        with pytest.raises(ValueError):
+            self.entry._validate_status('')
