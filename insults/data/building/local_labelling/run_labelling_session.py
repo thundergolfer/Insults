@@ -78,7 +78,7 @@ def get_label(entry):
             print("Invalid!")
         else:
             print("'{}' is recorded!".format(response))
-            label = 1 if 'y' else 0
+            label = 1 if response == 'y' else 0
             return {
                 'comment': entry['comment'],
                 'is_insult': label
@@ -86,8 +86,8 @@ def get_label(entry):
             time.sleep(0.5)
 
 
-def update_dataset(responses):
-    df = pd.read_csv(DATASET_PATH, index_col=False)
+def update_dataset(dataset_path, responses):
+    df = pd.read_csv(dataset_path, index_col=False)
     df.set_index('Comment', inplace=True, drop=False)
 
     for resp in responses:
@@ -99,7 +99,7 @@ def update_dataset(responses):
         df.loc[comm, 'HIT ID'] = 'LOCAL'
         df.loc[comm, 'Status'] = "LABELLED"
 
-    df.to_csv(DATASET_PATH, index=False)
+    df.to_csv(dataset_path, index=False)
 
 
 if __name__ == '__main__':
@@ -119,6 +119,6 @@ if __name__ == '__main__':
     print("Done with responses. Now will update dataset")
     print("-" * 20)
 
-    update_dataset(responses)
+    update_dataset(DATASET_PATH, responses)
 
     print("Update finished. Thanks for your time")
