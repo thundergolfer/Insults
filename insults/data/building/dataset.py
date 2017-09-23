@@ -30,6 +30,9 @@ def default_dataset_header():
 
 
 def csv_entry_to_dict(row, csv_header):
+    if len(row) != len(csv_header):
+        raise ValueError('Row and Header do not match in length')
+
     return dict(zip(csv_header, row))
 
 
@@ -121,7 +124,7 @@ class DatasetEntry():
         if is_insult is not False and is_insult is not True:
             raise ValueError("'is_insult' must be a boolean")
 
-        return 1 if True else 0
+        return 1 if is_insult is True else 0
 
     def _validate_a_parent_comment(self, parent_comment):
         if parent_comment is None:
