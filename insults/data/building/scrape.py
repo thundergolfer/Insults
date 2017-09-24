@@ -46,47 +46,51 @@ def get_parents_of_reddit_comment(comment):
     return previous_comment, prev_prev_comment
 
 
-def scrape_reddit_defaults():
-    setup_dataset_file(DEFAULT_DATASET, default_dataset_header())
+def scrape_reddit_defaults(reddit, dataset_path=DEFAULT_DATASET):
+    setup_dataset_file(dataset_path, default_dataset_header())
 
-    for subreddit in r.subreddits.default(limit=None):
-        submissions = subreddit.hot(limit=15)
+    for subreddit in reddit.subreddits.default(limit=None):
+        scrape_subreddit(subreddit, dataset_path=dataset_path)
 
-        for submission in submissions:
-            print submission.title
-            print submission.url
-            print "=" * 30
-            submission.comments.replace_more()
-            comments = sorted(submission.comments.list(), key=lambda x: x.score)
 
-            for comment in reservoir_sample(comments, NUM_COMMENTS_TO_GRAB_PER_SUBMISSION):
-                if comment.body == '[removed]':
-                    continue
+def scrape_subreddit(subreddit, dataset_path):
+    submissions = subreddit.hot(limit=15)
 
-                if not validate_comment(comment.body):
-                    continue
+    for submission in submissions:
+        print submission.title
+        print submission.url
+        print "=" * 30
+        submission.comments.replace_more()
+        comments = sorted(submission.comments.list(), key=lambda x: x.score)
 
-                parent_comment, grandparent_comment = get_parents_of_reddit_comment(comment)
+        for comment in reservoir_sample(comments, NUM_COMMENTS_TO_GRAB_PER_SUBMISSION):
+            if comment.body == '[removed]':
+                continue
 
-                if not validate_parent_comments(parent_comment, grandparent_comment):
-                    continue
+            if not validate_comment(comment.body):
+                continue
 
-                entry = DatasetEntry(
-                    comment=comment.body,
-                    datetime=datetime.utcfromtimestamp(comment.created_utc),
-                    is_insult=None,
-                    usage=None,
-                    source='reddit',
-                    score=comment.score,
-                    parent_comment=parent_comment,
-                    grandparent_comment=grandparent_comment,
-                    status='READY',
-                    labels=None,
-                    difficulty=None
-                )
-                entry.add_to_dataset()
+            parent_comment, grandparent_comment = get_parents_of_reddit_comment(comment)
 
-            print "\n" * 1
+            if not validate_parent_comments(parent_comment, grandparent_comment):
+                continue
+
+            entry = DatasetEntry(
+                comment=comment.body,
+                datetime=datetime.utcfromtimestamp(comment.created_utc),
+                is_insult=None,
+                usage=None,
+                source='reddit',
+                score=comment.score,
+                parent_comment=parent_comment,
+                grandparent_comment=grandparent_comment,
+                status='READY',
+                labels=None,
+                difficulty=None
+            )
+            entry.add_to_dataset(dataset_path=dataset_path)
+
+        print "\n" * 1
 
 
 if __name__ == '__main__':
@@ -94,4 +98,4 @@ if __name__ == '__main__':
                     client_id='Zeep1Q72XFf9HA',
                     client_secret='WADOW_Pyl7nlz8oHnBFerqBTWuY')
 
-    scrape_reddit_defaults()
+    scrape_reddit_defaults(r)
