@@ -17,9 +17,10 @@ with open(os.path.join(CURR_FILES_PATH, 'default_dataset_criteria.json')) as con
 
 
 def validate_comment(comment, config=DEFAULT_CONFIG):
+    validate_dataset_criteria_config(config)
+    
     logging.info("Validating Comment: {}".format(comment.encode('utf-8')))
 
-    validate_dataset_criteria_config(config)
     comment_len = len(comment)
 
     # There's no point processing empty comments or comments too short
