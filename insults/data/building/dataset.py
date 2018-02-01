@@ -35,7 +35,7 @@ def csv_entry_to_dict(row, csv_header):
 
 class DatasetEntry():
     DEFAULT_DATASET = os.path.join(PATH_TO_HERE, 'new_dataset.csv')
-    ALLOWED_LABLES = ['racist', 'sexist', 'sarcasm', 'ableist']
+    ALLOWED_LABELS = ['racist', 'sexist', 'sarcasm', 'ableist']
     ALLOWED_STATUS = ['READY', 'SUBMITTED', 'LABELLED']
     DIFFICULTY = ['easy', 'medium', 'hard', 'impossible']
 
@@ -106,7 +106,7 @@ class DatasetEntry():
         return dt.strftime("%Y%m%d%H%M%SZ")
 
     def _validate_source(self, source):
-        if source not in set(['reddit']):
+        if source not in set(['reddit', 'SYNTHETIC']):
             raise ValueError("{} is not a valid dataset source".format(source))
 
         return source
@@ -133,7 +133,7 @@ class DatasetEntry():
         if labels is None:
             return []
 
-        if not all(l in self.ALLOWED_LABLES for l in labels):
+        if not all(l in self.ALLOWED_LABELS for l in labels):
             raise ValueError("invalid label in 'labels'")
 
         return labels
