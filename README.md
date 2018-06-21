@@ -49,7 +49,7 @@ or alternatively you can run single commands in the environment with:
 
 ##### Running The Tests
 
-`python -m pytests tests/`
+`python -m pytest tests/`
 
 ### Credit
 
