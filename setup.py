@@ -82,7 +82,7 @@ setup(
         'six==1.10.0',
         'pandas==0.19.2',
         'futures==2.2.0',
-        'nltk==3.0'
+        'nltk==3.6.3'
   ],
 
   # If there are data files included in your packages that need to be
